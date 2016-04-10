@@ -5,7 +5,7 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
 var parseExpressHttpsRedirect = require('parse-express-https-redirect');
-var parseExpressCookieSession = require('parse-express-cookie-session');
+//var parseExpressCookieSession = require('parse-express-cookie-session');
 
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
@@ -163,7 +163,7 @@ app.get('/test', function(req, res) {
 var port = process.env.PORT || 1337;
 var httpServer = require('http').createServer(app);
 httpServer.listen(port, function() {
-    console.log('parse-server-example running on port ' + port + '.');
+    console.log('sharpic app running on port ' + port + '.');
 });
 
 // This will enable the Live Query real-time server
