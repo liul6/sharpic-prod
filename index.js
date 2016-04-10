@@ -81,9 +81,9 @@ app.post('/login', function(req, res) {
             res.redirect('/dashboard');
         }
     }, function(error) {
-//        res.render('login', {error: 'Louis found Invalid email or password.'});
+        res.render('login', {error: 'Louis found Invalid email or password.'});
 //        res.render('login', {error: req.body.username});
-        res.render('login', {error: req.body.password});
+//        res.render('login', {error: req.body.password});
     });
 });
 
