@@ -1,15 +1,26 @@
 {
-  "name": "parse-sharp-local",
+  "name": "sharpic-web",
   "version": "1.0.0",
-  "description": "An example Parse API server using the parse-server module",
+  "description": "Sharp Inventory Control",
   "main": "index.js",
   "author": "louis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liul6/SharpIC-Web"
+  },
   "license": "MIT",
   "dependencies": {
     "express": "~4.11.x",
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
-    "parse-server": "~2.2.2"
+    "parse-server": "~2.2.2",
+	"cookie-parser": "~1.4.x",
+	"cookie-session": "2.0.0-alpha.1",
+	"parse-express-https-redirect": "0.0.1",
+	"parse-express-cookie-session": "~0.0.x",
+	"underscore": "~1.8.x",
+	"body-parser": "~1.15.x",
+	"ejs": "~2.4.x"
   },
   "scripts": {
     "start": "node index.js"
