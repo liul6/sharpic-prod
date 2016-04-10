@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include head.ejs %>
+</head>
+
+<body>
+
+<%- include nav.ejs %>
+
+<div class="container-fluid">
+    <div class="row">
+        <% if (changedPassword) { %>
+        <div class="col-sm-12 col-md-12 main">
+            <%- include changed_password_alert.ejs %>
+        </div>
+        <% } %>
+        <div id="reports" class="col-sm-12 col-md-12 main">
+            <%- include reports.ejs %>
+        </div>
+        <div class="col-sm-12 col-md-12 main">
+            <div id="activity"></div>
+        </div>
+    </div>
+</div>
+
+<%- include report_summary.ejs %>
+
+<div id="session" style="display: none;"><%= Parse.User.current().getSessionToken() %></div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<%- include vendor_scripts.ejs %>
+<script src="/public/assets/javascript/dashboard.js"></script>
+<script src="/public/assets/javascript/reports.js"></script>
+<script src="/public/assets/javascript/variance_report.js"></script>
+<script src="/public/assets/javascript/cost_report.js"></script>
+<script src="/public/assets/javascript/sales_report.js"></script>
+<script src="/public/assets/javascript/variance_by_tag_report.js"></script>
+</body>
+</html>

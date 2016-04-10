@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include head.ejs %>
+</head>
+
+<body>
+
+<%- include nav.ejs %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul id="sidebar" class="nav nav-sidebar">
+                <li class="active"><a href="#audits">Audits <span class="sr-only">(current)</span></a></li>
+                <li><a href="#recipes">Recipes</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#clients">Clients</a></li>
+                <li><a href="#reports">Reports</a></li>
+                <li><a href="#users">Users</a></li>
+            </ul>
+        </div>
+        <% if (changedPassword) { %>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <%- include changed_password_alert.ejs %>
+        </div>
+        <% } %>
+        <div id="users" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" style="display: none;">
+            <h1 class="page-header">Users</h1>
+            <button id="add-user" type="button" class="btn btn-success add-button"><span class="glyphicon glyphicon-plus"></span> Add User</button>
+            <div id="users-table"></div>
+        </div>
+        <div id="clients" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" style="display: none;">
+            <h1 class="page-header">Clients</h1>
+            <button id="add-client" type="button" class="btn btn-success add-button"><span class="glyphicon glyphicon-plus"></span> Add Client</button>
+            <div id="clients-table"></div>
+        </div>
+        <div id="products" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" style="display: none;">
+            <h1 class="page-header">Products</h1>
+            <span id="product-client-select"></span>
+            <button id="add-product" type="button" class="btn btn-success add-button"><span class="glyphicon glyphicon-plus"></span> Add Product</button>
+            <button id="manage-categories" type="button" class="btn btn-primary add-button">Manage Categories</button>
+            <div id="products-table"></div>
+        </div>
+        <div id="recipes" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" style="display: none;">
+            <h1 class="page-header">Recipes</h1>
+            <div id="recipes-error" class="alert alert-danger" role="alert" style="display: none;">
+                <strong>Error</strong> - Failed to upload recipes.
+            </div>
+            <div id="recipes-success" class="alert alert-success" role="alert" style="display: none;">
+                <strong>Success</strong> - Recipes have been uploaded.
+            </div>
+            <div class="input-container">
+                <span id="recipe-client-select"></span>
+                <span id="recipes-file-input" class="file-input btn btn-primary btn-file" style="display: none;">
+                    <span class="glyphicon glyphicon-upload"></span> Upload recipes&hellip; <input type="file" multiple accept="text/csv">
+                </span>
+            </div>
+            <button id="toggle-ignored" type="button" class="btn btn-info add-button" style="display:none;"><span class="glyphicon glyphicon-plus"></span> Show Ignored</button>
+            <div id="recipes-ignored-table" style="display:none;"></div>
+            <div id="recipes-table"></div>
+        </div>
+        <div id="audits" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Audits</h1>
+            <div id="audits-error" class="alert alert-danger" role="alert" style="display: none;">
+                <strong>Error</strong> - Failed to upload sales.
+            </div>
+            <div id="audits-success" class="alert alert-success" role="alert" style="display: none;">
+                <strong>Success</strong> - Sales have been uploaded.
+            </div>
+            <div class="input-container">
+                <span id="audit-client-select"></span>
+                <span id="audit-date-select" style="display: none;"></span>
+                <span id="audits-file-input" class="file-input btn btn-primary btn-file" style="display: none;">
+                    <span class="glyphicon glyphicon-upload"></span> Upload sales&hellip; <input type="file" multiple accept="text/csv">
+                </span>
+                <button id="add-audit" type="button" class="btn btn-success" style="display: none;"><span class="glyphicon glyphicon-plus"></span> Add Audit</button>
+                <button id="delete-audit" type="button" class="btn btn-danger" style="display: none;"><span class="glyphicon glyphicon-remove"></span> Delete Audit</button>
+            </div>
+            <div id="audit-notes" style="margin:20px; display:none;"><strong>Notes: </strong><span></span></div>
+            <div class="input-container">
+                <span id="audit-location-select"></span>
+                <button id="add-entry" type="button" class="btn btn-success" style="display: none;"><span class="glyphicon glyphicon-plus"></span> Add Entry</button>
+                <button id="add-modifiers" type="button" class="btn btn-primary" style="display: none;"><span class="glyphicon glyphicon-plus"></span> Add Modifiers</button>
+            </div>
+            <div id="audits-table"></div>
+        </div>
+        <div id="reports" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" style="display: none;">
+            <%- include reports.ejs %>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div id="activity"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="delete-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modifiers-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">Modifiers</h4>
+            </div>
+            <div class="modal-body">
+                <span id="modifiers-select"></span>
+                <button id="delete-modifier" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-plus"></span> Delete Modifier</button>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="modifier-name">Name</label>
+                        <input type="text" class="form-control" id="modifier-name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-percentage">Percentage</label>
+                        <input type="text" class="form-control" placeholder="Percentage" id="modifier-percentage">
+                    </div>
+                </form>
+                <button id="add-modifier-item" type="button" class="btn btn-success add-button"><span class="glyphicon glyphicon-plus"></span> Add Item</button>
+                <div id="modifier-delete-alert" class="alert alert-warning" style="display: none;">
+                    <div><p>Are you sure you want to delete <strong></strong>?</p></div>
+                    <button type="button" class="btn btn-default">Cancel</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </div>
+                <div id="modifiers-table"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="categories-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">Categories</h4>
+            </div>
+            <div class="modal-body">
+                <button id="add-category" type="button" class="btn btn-success add-button"><span class="glyphicon glyphicon-plus"></span> Add Category</button>
+                <div id="category-delete-alert" class="alert alert-warning" style="display: none;">
+                    <div><p>Are you sure you want to delete <strong></strong>?</p></div>
+                    <button type="button" class="btn btn-default">Cancel</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </div>
+                <div id="categories-table"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include report_summary.ejs %>
+
+<div id="session" style="display: none;"><%= Parse.User.current().getSessionToken() %></div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<%- include vendor_scripts.ejs %>
+<script src="/public/assets/javascript/dashboard.js"></script>
+<script src="/public/assets/javascript/products.js"></script>
+<script src="/public/assets/javascript/clients.js"></script>
+<script src="/public/assets/javascript/recipes.js"></script>
+<script src="/public/assets/javascript/audits.js"></script>
+<script src="/public/assets/javascript/reports.js"></script>
+<script src="/public/assets/javascript/users.js"></script>
+<script src="/public/assets/javascript/modifiers.js"></script>
+<script src="/public/assets/javascript/categories.js"></script>
+<script src="/public/assets/javascript/variance_report.js"></script>
+<script src="/public/assets/javascript/cost_report.js"></script>
+<script src="/public/assets/javascript/sales_report.js"></script>
+<script src="/public/assets/javascript/variance_by_tag_report.js"></script>
+</body>
+</html>
