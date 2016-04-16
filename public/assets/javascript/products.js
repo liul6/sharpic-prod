@@ -241,6 +241,10 @@
                         label: "Tare",
                         cell: "number"
                     }, {
+                        name: "retailPrice",
+                        label: "Retail Price",
+                        cell: "number"
+                    }, {
                         name: "cost",
                         label: "Cost",
                         cell: CostCell
