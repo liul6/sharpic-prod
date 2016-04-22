@@ -569,14 +569,7 @@
                     if (type == "TouchBistro") {
                         end = values.length;
                     }
-					
-                    var foodrecipequery = new Parse.Query(Recipe);
-                    foodrecipequery.equalTo('client', client);
-                    foodrecipequery.equalTo('food', true);
-                    foodrecipequery.limit(1000);
-					
-		//			var allRecipesQuery = Parse.Query.or(query, foodrecipequery);
-					
+                    
                     query.find().then(function (newRecipes) {
                         var recipesToSave = [];
                         for (var i = start; i < end; i++) {
