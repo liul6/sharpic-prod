@@ -575,9 +575,9 @@
                     foodrecipequery.equalTo('food', true);
                     foodrecipequery.limit(1000);
 					
-					var allRecipesQuery = Parse.Query.or(query, foodrecipequery);
+		//			var allRecipesQuery = Parse.Query.or(query, foodrecipequery);
 					
-                    allRecipesQuery.find().then(function (newRecipes) {
+                    query.find().then(function (newRecipes) {
                         var recipesToSave = [];
                         for (var i = start; i < end; i++) {
                             var recipe = null;
