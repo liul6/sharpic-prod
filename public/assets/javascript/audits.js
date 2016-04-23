@@ -593,11 +593,11 @@
                                 name = values[i][1];
                                 amount = values[i][5];
                                 gross = values[i][4];
-                            } else if (type == "Cibo") {
-                                name = values[i][2];
-                                amount = parseInt(values[i][3]);
-                                gross = parseFloat(values[i][5].replace(/[^0-9\.]+/g, ""));
-                            }
+                            } else if (type == "Cibo") 
+                            
+                             if ( amount < 0.1 )
+                                 continue;
+                            
                             for (var j = 0; j < newRecipes.length; j++) {
                                 var aRecipe = newRecipes[j];
                                 if (aRecipe.get('name') == name) {
