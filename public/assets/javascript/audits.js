@@ -589,7 +589,6 @@
                     
 		    Parse.Promise.when([newRecipes.fetch(), recipesWithoutRecipeItems.fetch()]).then(function () {
 //                    query.find().then(function (newRecipes) {
-
 		    	
 	                newRecipes.forEach(function(aRecipe) {
                     	    allValidRecipes.push(aRecipe);
@@ -669,7 +668,7 @@
                         //recipes = _.union(recipesToSave, newRecipes);
 						
 			var tempRecipes = [];
-			var countRecipe =0;
+			var countRecipe = 0;
 			
 			for ( var z = 0; z < recipesToSave.length; z++){
 				countRecipe++;
@@ -681,7 +680,7 @@
 				}             														
 			}
 			
-			if(countRecipe>0) {
+			if(countRecipe > 0) {
 				return Parse.Object.saveAll(tempRecipes);
 			}
                     }).then(function() {
