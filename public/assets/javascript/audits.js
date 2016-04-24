@@ -423,19 +423,28 @@
         $modal.modal().find('.btn-danger').unbind('click').click(function () {
             $activity.activity();
             $auditsTable.hide();
-            audit.destroy().then(function() {
-                var client = clientsCollection.at(clientSelect.el.selectedIndex - 1);
-                var audits = client.get('audits');
-                var index = audits.indexOf(audit);
-                audits.splice(index, 1);
-                client.set('audits', audits);
-                auditSelect.render();
-                auditSelect.$el.selectpicker('refresh');
-                auditSelect.$el.selectpicker('val', '');
-                auditSelect.el.onchange();
-                audit = null;
-                $activity.activity(false);
-            });
+            var SaleO = Parse.Object.extend('Sale');
+	    var saleQueryO = new Parse.Query(SaleO);
+	    saleQueryO.equalTo('audit', audit);
+	    saleQueryO.limit(1000);
+	    saleQueryO.find().then(function(saleso) {
+		Parse.Object.destroyAll(saleso);
+	    }).then(function(success) {
+            	audit.destroy().then(function() {
+	                var client = clientsCollection.at(clientSelect.el.selectedIndex - 1);
+	                var audits = client.get('audits');
+	                var index = audits.indexOf(audit);
+	                audits.splice(index, 1);
+	                client.set('audits', audits);
+	                auditSelect.render();
+	                auditSelect.$el.selectpicker('refresh');
+	                auditSelect.$el.selectpicker('val', '');
+	                auditSelect.el.onchange();
+	                audit = null;
+	                $activity.activity(false);
+	            });
+	    });
+	            
             $modal.modal('hide');
         });
     });
