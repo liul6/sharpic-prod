@@ -436,6 +436,7 @@
 	                var index = audits.indexOf(audit);
 	                audits.splice(index, 1);
 	                client.set('audits', audits);
+	                client.save();
 	                auditSelect.render();
 	                auditSelect.$el.selectpicker('refresh');
 	                auditSelect.$el.selectpicker('val', '');
