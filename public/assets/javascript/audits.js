@@ -680,10 +680,9 @@
 				}             														
 			}
 			
-			if(countRecipe > 0) {
+//			if(countRecipe > 0) {
 				return Parse.Object.saveAll(tempRecipes);
-			}
-			return;
+//			}
                     }).then(function() {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
