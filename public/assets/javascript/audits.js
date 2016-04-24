@@ -623,7 +623,7 @@
                                     }
                                     break;
                                 }
-                            }
+                            });
 
                             recipesWithoutRecipeItems.forEach(function(aRecipe1) {
 //                            for (var p = 0; p < recipesWithoutRecipeItems.length; p++) {
@@ -635,7 +635,7 @@
                                     }
                                     break;
                                 }
-                            }
+                            });
 
                             if (!recipe) {
                                 recipe = new Recipe({
