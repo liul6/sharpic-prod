@@ -586,6 +586,18 @@
                     
 		    Parse.Promise.when([newRecipes.fetch(), recipesWithoutRecipeItems.fetch()]).then(function () {
 //                    query.find().then(function (newRecipes) {
+
+		    	var allValidRecipes = [];
+		    	var allInvalidRecipes = [];
+		    	
+	                newRecipes.forEach(function(aRecipe) {
+                    	    allValidRecipes.push(aRecipe);
+                        });
+                        
+	                recipesWithoutRecipeItems.forEach(function(aRecipe1) {
+                    	    allInvalidRecipes.push(aRecipe1);
+                        });
+
                         var recipesToSave = [];
                         for (var i = start; i < end; i++) {
                             var recipe = null;
@@ -613,29 +625,27 @@
                              if ( amount < 0.1 )
                                  continue;
                             
-                            newRecipes.forEach(function(aRecipe) {
-//                            for (var j = 0; j < newRecipes.length; j++) {
-//                                var aRecipe = newRecipes[j];
-                                if (aRecipe.get('name') == name) {
-                                    recipe = aRecipe;
+                            for (var j = 0; j < allValidRecipes.length; j++) {
+                                var bRecipe = allValidRecipes[j];
+                                if (bRecipe.get('name') == name) {
+                                    recipe = bRecipe;
                                     if (!recipe.get('name')) {
                                         recipe.set('name', name);
                                     }
                                     break;
                                 }
-                            });
+                            }
 
-                            recipesWithoutRecipeItems.forEach(function(aRecipe1) {
-//                            for (var p = 0; p < recipesWithoutRecipeItems.length; p++) {
-//                                var aRecipe1 = recipesWithoutRecipeItems[p];
-                                if (aRecipe1.get('name') == name) {
-                                    recipe = aRecipe1;
+                            for (var p = 0; p < allInvalidRecipes.length; p++) {
+                                var bRecipe1 = allInvalidRecipes[p];
+                                if (bRecipe1.get('name') == name) {
+                                    recipe = bRecipe1;
                                     if (!recipe.get('name')) {
                                         recipe.set('name', name);
                                     }
                                     break;
                                 }
-                            });
+                            }
 
                             if (!recipe) {
                                 recipe = new Recipe({
