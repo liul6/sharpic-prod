@@ -613,8 +613,9 @@
                              if ( amount < 0.1 )
                                  continue;
                             
-                            for (var j = 0; j < newRecipes.length; j++) {
-                                var aRecipe = newRecipes[j];
+                            newRecipes.forEach(function(aRecipe) {
+//                            for (var j = 0; j < newRecipes.length; j++) {
+//                                var aRecipe = newRecipes[j];
                                 if (aRecipe.get('name') == name) {
                                     recipe = aRecipe;
                                     if (!recipe.get('name')) {
@@ -624,8 +625,9 @@
                                 }
                             }
 
-                            for (var p = 0; p < recipesWithoutRecipeItems.length; p++) {
-                                var aRecipe1 = recipesWithoutRecipeItems[p];
+                            recipesWithoutRecipeItems.forEach(function(aRecipe1) {
+//                            for (var p = 0; p < recipesWithoutRecipeItems.length; p++) {
+//                                var aRecipe1 = recipesWithoutRecipeItems[p];
                                 if (aRecipe1.get('name') == name) {
                                     recipe = aRecipe1;
                                     if (!recipe.get('name')) {
