@@ -8,6 +8,8 @@
         client = null,
         audit = null,
         location = null,
+        newRecipes = null,
+	recipesWithoutRecipeItems = null,
         $activity = $('#activity'),
         $auditSelect = $('#audit-date-select'),
         $auditsTable = $('#audits-table'),
@@ -552,15 +554,27 @@
                     }
                 }
                 if (validated) {
-                    var Recipe = Parse.Object.extend('Recipe');
                     var Sale = Parse.Object.extend('Sale');
+
+                    var Recipe = Parse.Object.extend('Recipe');
+
                     var query = new Parse.Query(Recipe);
                     query.equalTo('client', client);
                     query.equalTo('ignore', false);
-					query.exists('recipeItems');
-					query.descending('updatedAt');
+		    query.exists('recipeItems');
+		    query.descending('updatedAt');
                     query.limit(1000);
+                    newRecipes = query.collection();
+
                     var recipes;
+                    var query1 = new Parse.Query(Recipe);
+                    query1.equalTo('client', client);
+                    query1.equalTo('ignore', false);
+		    query1.doesNotExist('recipeItems');
+		    query1.descending('updatedAt');
+                    query1.limit(1000);
+                    recipesWithoutRecipeItems=query1.collection();
+                    
                     var start = 1;
                     if (type == "TouchBistro") {
                         start = 3;
@@ -570,7 +584,8 @@
                         end = values.length;
                     }
                     
-                    query.find().then(function (newRecipes) {
+		    Parse.Promise.when([newRecipes.fetch(), recipesWithoutRecipeItems.fetch()]).then(function () {
+//                    query.find().then(function (newRecipes) {
                         var recipesToSave = [];
                         for (var i = start; i < end; i++) {
                             var recipe = null;
@@ -608,12 +623,24 @@
                                     break;
                                 }
                             }
+
+                            for (var p = 0; p < recipesWithoutRecipeItems.length; p++) {
+                                var aRecipe1 = recipesWithoutRecipeItems[p];
+                                if (aRecipe1.get('name') == name) {
+                                    recipe = aRecipe1;
+                                    if (!recipe.get('name')) {
+                                        recipe.set('name', name);
+                                    }
+                                    break;
+                                }
+                            }
+
                             if (!recipe) {
                                 recipe = new Recipe({
                                     name: name,
                                     client: client,
                                     ignore: false,
-									food: false
+				    food: false
                                 });
                                 var acl = new Parse.ACL();
                                 acl.setRoleWriteAccess('Administrator', true);
