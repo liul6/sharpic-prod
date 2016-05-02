@@ -52,12 +52,12 @@
         ignoreRow: function (e) {
             e.preventDefault();
 
-            var Sale = Parse.Object.extend("Sale"); 
+            var Sale = Parse.Object.extend('Sale'); 
             var query = new Parse.Query(Sale);  
         
-            query.include("recipe");
-        
-            query.equalTo("recipe", this.model);
+            query.include('recipe');
+            query.equalTo('recipe', this.model);
+            
             query.find(
                 success: function(results) {
                    console.error("Error: the recipe is used in sale, cannot be ignored!");
