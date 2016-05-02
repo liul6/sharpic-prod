@@ -58,7 +58,7 @@
             query.include('recipe');
             query.equalTo('recipe', this.model);
             
-            query.find(
+            query.find({
                 success: function(results) {
                    console.error("Error: the recipe is used in sale, cannot be ignored!");
                 },
