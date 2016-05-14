@@ -10,7 +10,7 @@ var parseExpressHttpsRedirect = require('parse-express-https-redirect');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 
-var databaseUri = 'mongodb://admin:calypso@ds011409.mlab.com:11409/shapric-test';
+var databaseUri = 'mongodb://admin:calypso@ds011409.mlab.com:11409/shapric-dev';
 //var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
@@ -18,7 +18,7 @@ if (!databaseUri) {
 }
 
 var api = new ParseServer({
-  databaseURI: 'mongodb://admin:calypso@ds011409.mlab.com:11409/shapric-test',
+  databaseURI: 'mongodb://admin:calypso@ds011409.mlab.com:11409/shapric-dev',
   cloud: __dirname + '/cloud/main.js',
   appId: 'hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX',
   masterKey: 'x1S3MP94OpM2eglWnKLTbXMipkCM5pBf5Eha2Ckn', //Add your master key here. Keep it secret!
