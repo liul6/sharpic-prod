@@ -747,12 +747,9 @@
 			}, function(error) {
 			});
 			
-			var h = 0;
-			for(h=0; h<sales.length; h++) {
-				audit.add('sales', sales[h]);
-				audit.save();
-			}
-                    }).then(function(sales) {
+			audit.set('sales', sales);
+			audit.save();
+                    }).then(function() {
 
                         $auditsTable.show();
                         $activity.activity(false);
