@@ -750,9 +750,7 @@
 			var h = 0;
 			for(h=0; h<sales.length; h++) {
 				audit.add('sales', sales[h]);
-				audit.save().then(function(audit) {
-				}, function(error) {
-				});
+				audit.save();
 			}
                     }).then(function(sales) {
 
