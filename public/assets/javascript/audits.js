@@ -580,14 +580,14 @@
 					
 		    var salequery = new Parse.Query(Sale);
 		    //salequery.exists('audit_id');
-		    salequery.equalTo('price', 10);
+		    //salequery.equalTo('price', 10);
 		    //salequery.containedIn('audit_id',[]);
 		    salequery.limit(1000);
 		    var salesRemoved = salequery.collection();
 
 					var newRecipes = [];
 					
-					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch(), salesRemoved.fetch()]).then(function(results) {
+					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch(), salesRemoved.fetch()]).then(function() {
 						newNonFoodRecipes.add(newFoodRecipes.models);
 						newFoodRecipes.models = [];
 						
