@@ -576,11 +576,16 @@
                     foodrecipequery.equalTo('client', client);
                     foodrecipequery.equalTo('food', true);
                     foodrecipequery.limit(1000);
-					var newFoodRecipes=foodrecipequery.collection();
+		    var newFoodRecipes=foodrecipequery.collection();
 					
+		    var salequery = new Parse.Query(Sale);
+		    salequery.equalTo('audit_id', audit.id);
+		    salequery.limit(1000);
+		    var salesRemoved = salequery.collection();
+
 					var newRecipes = [];
 					
-					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function(results) {
+					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch(), salesRemoved.fetch()]).then(function(results) {
 						newNonFoodRecipes.add(newFoodRecipes.models);
 						newFoodRecipes.models = [];
 						
@@ -655,26 +660,17 @@
 							}             														
 						}
                     }).then(function() {
-						Parse.Object.destroyAll(audit.get('sales'), { success: function(success) {
-								audit.set('sales', []);
-								audit.save();
-								
-							}
-						});	
+//						Parse.Object.destroyAll(audit.get('sales'), { success: function(success) {
+//								audit.set('sales', []);
+//								audit.save();
+//							}
+//						});	
 
-						var Sale = Parse.Object.extend('Sale');
-						var saleQueryO = new Parse.Query(Sale);
-						saleQueryO.equalTo('audit_id', audit.id);
-						saleQueryO.limit(1000);
-						var salesRemoved = saleQueryO.collection();
-
-						Parse.Promise.when([salesRemoved.fetch()]).then(function(results) {
-							var tempSales = [];
-						  	salesRemoved.forEach(function(oneSale) {
-								tempSales.push(oneSale);
-							});
-							Parse.Object.destroyAll(tempSales);
-						});						
+						var tempSales = [];
+					  	salesRemoved.forEach(function(oneSale) {
+							tempSales.push(oneSale);
+						});
+						Parse.Object.destroyAll(tempSales);
                     }).then(function() {
                         var sales = [];
 //                        Parse.Object.destroyAll(audit.get('sales'));
