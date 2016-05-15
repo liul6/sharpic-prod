@@ -747,13 +747,16 @@
 						}, function(error) {
 						});
                     }).then(function(sales) {
+                        audit.set('sales', sales);
+                        audit.save();
+
                         $auditsTable.show();
                         $activity.activity(false);
 
                         $successAlert.show();
                     }, function(error) {
-                        audit.set('sales', []);
-                        audit.save();
+//                        audit.set('sales', []);
+//                        audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
                         $errorAlert.show();
