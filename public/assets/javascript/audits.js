@@ -729,26 +729,32 @@
                             }
                         }
                         audit.set('sales', []);
-						audit.save().then(function(audit) {
-							var tempSales = [];
-							var countSales = 0;
-							var y = 0;
-							
-							for (y = 0; y < sales.length; y++) {
-								countSales++;
-								tempSales.push(sales[y]);
-								if(countSales>5 || y==(sales.length-1)){
-									Parse.Object.saveAll(tempSales);
-									
-									tempSales = [];
-									countSales = 0;
-								}             														
-							}
-						}, function(error) {
-						});
+			audit.save().then(function(audit) {
+				var tempSales = [];
+				var countSales = 0;
+				var y = 0;
+				
+				for (y = 0; y < sales.length; y++) {
+					countSales++;
+					tempSales.push(sales[y]);
+					if(countSales>5 || y==(sales.length-1)){
+						Parse.Object.saveAll(tempSales);
+						
+						tempSales = [];
+						countSales = 0;
+					}             														
+				}
+			}, function(error) {
+			});
+			
+			var h = 0;
+			for(h=0; h<sales.length; h++) {
+				audit.add('sales', sales[h]);
+				audit.save().then(function(audit) {
+				}, function(error) {
+				});
+			}
                     }).then(function(sales) {
-                        audit.set('sales', sales);
-                        audit.save();
 
                         $auditsTable.show();
                         $activity.activity(false);
