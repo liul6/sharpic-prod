@@ -662,8 +662,8 @@
 							}
 						});	
 
-						var SaleO = Parse.Object.extend('Sale');
-						var saleQueryO = new Parse.Query(SaleO);
+						var Sale = Parse.Object.extend('Sale');
+						var saleQueryO = new Parse.Query(Sale);
 						saleQueryO.equalTo('audit_id', audit.id);
 						saleQueryO.limit(1000);
 						var salesRemoved = saleQueryO.collection();
@@ -746,9 +746,6 @@
 				}
 			}, function(error) {
 			});
-			
-			audit.set('sales', sales);
-			audit.save();
                     }).then(function() {
 
                         $auditsTable.show();
