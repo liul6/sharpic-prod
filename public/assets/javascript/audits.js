@@ -579,8 +579,8 @@
 		    var newFoodRecipes=foodrecipequery.collection();
 					
 		    var salequery = new Parse.Query(Sale);
-		    salequery.exists('audit_id');
-		    salequery.equalTo('audit_id', audit.id);
+		    //salequery.exists('audit_id');
+		    salequery.equalTo('price', 10);
 		    //salequery.containedIn('audit_id',[]);
 		    salequery.limit(1000);
 		    var salesRemoved = salequery.collection();
