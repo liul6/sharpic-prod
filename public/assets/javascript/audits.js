@@ -464,7 +464,7 @@
         $activity.activity();
         var file = this.files[0];
         var type = "Valante";
-		
+        
         Papa.parse(file, {
             complete: function (results) {
                 var validated = false;
@@ -551,17 +551,18 @@
                         type = "Cibo";
                     }
                 }
+				
                 if (validated) {
                     var Recipe = Parse.Object.extend('Recipe');
                     var Sale = Parse.Object.extend('Sale');
                     var query = new Parse.Query(Recipe);
                     query.equalTo('client', client);
                     query.equalTo('ignore', false);
-					query.exists('recipeItems');
-					query.descending('updatedAt');
+                    query.exists('recipeItems');
+                    query.descending('updatedAt');
                     query.limit(1000);
-					var newNonFoodRecipes=query.collection();
-					
+                    var newNonFoodRecipes=query.collection();
+                    
                     var recipes;
                     var start = 1;
                     if (type == "TouchBistro") {
@@ -571,29 +572,29 @@
                     if (type == "TouchBistro") {
                         end = values.length;
                     }
-					
+                    
                     var foodrecipequery = new Parse.Query(Recipe);
                     foodrecipequery.equalTo('client', client);
                     foodrecipequery.equalTo('food', true);
                     foodrecipequery.limit(1000);
-		    var newFoodRecipes=foodrecipequery.collection();
-					
-		    var salequery = new Parse.Query(Sale);
-		    //salequery.exists('audit_id');
-		    //salequery.equalTo('price', 10);
-		    //salequery.containedIn('audit_id',[]);
-		    salequery.limit(1000);
-		    var salesRemoved = salequery.collection();
+                    var newFoodRecipes=foodrecipequery.collection();
+                        
+                    var salequery = new Parse.Query(Sale);
+                    //salequery.exists('audit_id');
+                    //salequery.equalTo('price', 10);
+                    //salequery.containedIn('audit_id',[]);
+                    salequery.limit(1000);
+                    var salesRemoved = salequery.collection();
 
-					var newRecipes = [];
-					
-					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function() {
-						newNonFoodRecipes.add(newFoodRecipes.models);
-						newFoodRecipes.models = [];
-						
-						newNonFoodRecipes.forEach(function(oneRecipe) {
-							newRecipes.push(oneRecipe);
-						});
+                    var newRecipes = [];
+                        
+                    Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function(results) {
+                        newNonFoodRecipes.add(newFoodRecipes.models);
+                        newFoodRecipes.models = [];
+                        
+                        newNonFoodRecipes.forEach(function(oneRecipe) {
+                            newRecipes.push(oneRecipe);
+                        });
 
                         var recipesToSave = [];
                         for (var i = start; i < end; i++) {
@@ -637,7 +638,7 @@
                                     name: name,
                                     client: client,
                                     ignore: false,
-									food: false
+                                    food: false
                                 });
                                 var acl = new Parse.ACL();
                                 acl.setRoleWriteAccess('Administrator', true);
@@ -645,37 +646,37 @@
                                 recipe.setACL(acl);
                                 recipesToSave.push(recipe);
                             }
-							
+                            
                         }
                         recipes = _.union(recipesToSave, newRecipes);
-						
-						var tempRecipes = [];
-						var countRecipe =0;
-						
-						for ( var z = 0; z < recipesToSave.length; z++){
-							countRecipe++;
-							tempRecipes.push(recipesToSave[z]);
-							if(countRecipe>10 || z==(recipesToSave.length-1)){
-								Parse.Object.saveAll(tempRecipes);
-								tempRecipes = [];
-								countRecipe=0;
-							}             														
-						}
+                        
+                        var tempRecipes = [];
+                        var countRecipe =0;
+                        
+                        for ( var z = 0; z < recipesToSave.length; z++){
+                            countRecipe++;
+                            tempRecipes.push(recipesToSave[z]);
+                            if(countRecipe>10 || z==(recipesToSave.length-1)){
+                                Parse.Object.saveAll(tempRecipes);
+                                tempRecipes = [];
+                                countRecipe=0;
+                            }                                                                     
+                        }
                     }).then(function() {
-//						Parse.Object.destroyAll(audit.get('sales'), { success: function(success) {
-//								audit.set('sales', []);
-//								audit.save();
-//							}
-//						});	
+    //                        Parse.Object.destroyAll(audit.get('sales'), { success: function(success) {
+    //                                audit.set('sales', []);
+    //                                audit.save();
+    //                            }
+    //                        });    
 
-						var tempSales = [];
-					  	salesRemoved.forEach(function(oneSale) {
-							tempSales.push(oneSale);
-						});
-						Parse.Object.destroyAll(tempSales);
+                        var tempSales = [];
+                          salesRemoved.forEach(function(oneSale) {
+                            tempSales.push(oneSale);
+                        });
+                        Parse.Object.destroyAll(tempSales);
                     }).then(function() {
                         var sales = [];
-//                        Parse.Object.destroyAll(audit.get('sales'));
+    //                        Parse.Object.destroyAll(audit.get('sales'));
                         for (var i = start; i < end; i++) {
                             var recipe = null;
                             var name = "",
@@ -721,29 +722,29 @@
                                 var acl = new Parse.ACL();
                                 acl.setRoleWriteAccess('Administrator', true);
                                 acl.setRoleReadAccess(client.get('name'), true);
-  								sale.set("audit_id", audit.id);
+                                  sale.set("audit_id", audit.id);
                                 sale.setACL(acl);
                                 sales.push(sale);
                             }
                         }
                         audit.set('sales', []);
-			audit.save().then(function(audit) {
-				var tempSales = [];
-				var countSales = 0;
-				var y = 0;
-				
-				for (y = 0; y < sales.length; y++) {
-					countSales++;
-					tempSales.push(sales[y]);
-					if(countSales>5 || y==(sales.length-1)){
-						Parse.Object.saveAll(tempSales);
-						
-						tempSales = [];
-						countSales = 0;
-					}             														
-				}
-			}, function(error) {
-			});
+                        audit.save().then(function(audit) {
+                            var tempSales = [];
+                            var countSales = 0;
+                            var y = 0;
+                            
+                            for (y = 0; y < sales.length; y++) {
+                                countSales++;
+                                tempSales.push(sales[y]);
+                                if(countSales>5 || y==(sales.length-1)){
+                                    Parse.Object.saveAll(tempSales);
+                                    
+                                    tempSales = [];
+                                    countSales = 0;
+                                }                                                                     
+                            }
+                        }, function(error) {
+                        });
                     }).then(function() {
 
                         $auditsTable.show();
@@ -751,8 +752,8 @@
 
                         $successAlert.show();
                     }, function(error) {
-//                        audit.set('sales', []);
-//                        audit.save();
+    //                        audit.set('sales', []);
+    //                        audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
                         $errorAlert.show();
