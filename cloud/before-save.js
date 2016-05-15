@@ -53,8 +53,8 @@ Parse.Cloud.beforeSave('Client', function(request, response) {
 });
 
 Parse.Cloud.beforeSave('Audit', function(request, response) {
-    if (!request.object.get('sales')) {
-        request.object.set('sales', []);
+//    if (!request.object.get('sales')) {
+//        request.object.set('sales', []);
 
 //		var Sale = Parse.Object.extend('Sale');
 //		var saleQuery = new Parse.Query(Sale);
@@ -63,7 +63,7 @@ Parse.Cloud.beforeSave('Audit', function(request, response) {
 //		saleQuery.find().then(function(sales) {
 //			Parse.Object.destroyAll(sales);
 //		});
-	}	
+//	}	
 	
     response.success();
 });
