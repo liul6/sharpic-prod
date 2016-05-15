@@ -8,8 +8,6 @@
         client = null,
         audit = null,
         location = null,
-        newRecipes = null,
-	recipesWithoutRecipeItems = null,
         $activity = $('#activity'),
         $auditSelect = $('#audit-date-select'),
         $auditsTable = $('#audits-table'),
@@ -423,29 +421,19 @@
         $modal.modal().find('.btn-danger').unbind('click').click(function () {
             $activity.activity();
             $auditsTable.hide();
-            var SaleO = Parse.Object.extend('Sale');
-	    var saleQueryO = new Parse.Query(SaleO);
-	    saleQueryO.equalTo('audit', audit);
-	    saleQueryO.limit(1000);
-	    saleQueryO.find().then(function(saleso) {
-		Parse.Object.destroyAll(saleso);
-	    }).then(function(success) {
-            	audit.destroy().then(function() {
-	                var client = clientsCollection.at(clientSelect.el.selectedIndex - 1);
-	                var audits = client.get('audits');
-	                var index = audits.indexOf(audit);
-	                audits.splice(index, 1);
-	                client.set('audits', audits);
-	                client.save();
-	                auditSelect.render();
-	                auditSelect.$el.selectpicker('refresh');
-	                auditSelect.$el.selectpicker('val', '');
-	                auditSelect.el.onchange();
-	                audit = null;
-	                $activity.activity(false);
-	            });
-	    });
-	            
+            audit.destroy().then(function() {
+                var client = clientsCollection.at(clientSelect.el.selectedIndex - 1);
+                var audits = client.get('audits');
+                var index = audits.indexOf(audit);
+                audits.splice(index, 1);
+                client.set('audits', audits);
+                auditSelect.render();
+                auditSelect.$el.selectpicker('refresh');
+                auditSelect.$el.selectpicker('val', '');
+                auditSelect.el.onchange();
+                audit = null;
+                $activity.activity(false);
+            });
             $modal.modal('hide');
         });
     });
@@ -564,30 +552,17 @@
                     }
                 }
                 if (validated) {
-                    var Sale = Parse.Object.extend('Sale');
-
                     var Recipe = Parse.Object.extend('Recipe');
-
+                    var Sale = Parse.Object.extend('Sale');
                     var query = new Parse.Query(Recipe);
                     query.equalTo('client', client);
                     query.equalTo('ignore', false);
-		    query.exists('recipeItems');
-		    query.descending('updatedAt');
+					query.exists('recipeItems');
+					query.descending('updatedAt');
                     query.limit(1000);
-                    newRecipes = query.collection();
-
-                    var recipes = [];
-                    var query1 = new Parse.Query(Recipe);
-                    query1.equalTo('client', client);
-                    query1.equalTo('ignore', false);
-		    query1.doesNotExist('recipeItems');
-		    query1.descending('updatedAt');
-                    query1.limit(1000);
-                    recipesWithoutRecipeItems=query1.collection();
-
-		    var allValidRecipes = [];
-		    var allInvalidRecipes = [];
-                    
+					var newNonFoodRecipes=query.collection();
+					
+                    var recipes;
                     var start = 1;
                     if (type == "TouchBistro") {
                         start = 3;
@@ -596,17 +571,22 @@
                     if (type == "TouchBistro") {
                         end = values.length;
                     }
-                    
-		    Parse.Promise.when([newRecipes.fetch(), recipesWithoutRecipeItems.fetch()]).then(function () {
-//                    query.find().then(function (newRecipes) {
-		    	
-	                newRecipes.forEach(function(aRecipe) {
-                    	    allValidRecipes.push(aRecipe);
-                        });
-                        
-	                recipesWithoutRecipeItems.forEach(function(aRecipe1) {
-                    	    allInvalidRecipes.push(aRecipe1);
-                        });
+					
+                    var foodrecipequery = new Parse.Query(Recipe);
+                    foodrecipequery.equalTo('client', client);
+                    foodrecipequery.equalTo('food', true);
+                    foodrecipequery.limit(1000);
+					var newFoodRecipes=foodrecipequery.collection();
+					
+					var newRecipes = [];
+					
+					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function(results) {
+						newNonFoodRecipes.add(newFoodRecipes.models);
+						newFoodRecipes.models = [];
+						
+						newNonFoodRecipes.forEach(function(oneRecipe) {
+							newRecipes.push(oneRecipe);
+						});
 
                         var recipesToSave = [];
                         for (var i = start; i < end; i++) {
@@ -630,72 +610,74 @@
                                 name = values[i][1];
                                 amount = values[i][5];
                                 gross = values[i][4];
-                            } else if (type == "Cibo") 
-                            
-                             if ( amount < 0.1 )
-                                 continue;
-                            
-                            for (var j = 0; j < allValidRecipes.length; j++) {
-                                var bRecipe = allValidRecipes[j];
-                                if (bRecipe.get('name') == name) {
-                                    recipe = bRecipe;
+                            } else if (type == "Cibo") {
+                                name = values[i][2];
+                                amount = parseInt(values[i][3]);
+                                gross = parseFloat(values[i][5].replace(/[^0-9\.]+/g, ""));
+                            }
+                            for (var j = 0; j < newRecipes.length; j++) {
+                                var aRecipe = newRecipes[j];
+                                if (aRecipe.get('name') == name) {
+                                    recipe = aRecipe;
                                     if (!recipe.get('name')) {
                                         recipe.set('name', name);
                                     }
-                                    recipes.push(recipe);
                                     break;
                                 }
                             }
-
-                            for (var p = 0; p < allInvalidRecipes.length; p++) {
-                                var bRecipe1 = allInvalidRecipes[p];
-                                if (bRecipe1.get('name') == name) {
-                                    recipe = bRecipe1;
-                                    if (!recipe.get('name')) {
-                                        recipe.set('name', name);
-                                    }
-                                    recipes.push(recipe);
-                                    break;
-                                }
-                            }
-
                             if (!recipe) {
                                 recipe = new Recipe({
                                     name: name,
                                     client: client,
                                     ignore: false,
-				    food: false
+									food: false
                                 });
                                 var acl = new Parse.ACL();
                                 acl.setRoleWriteAccess('Administrator', true);
                                 acl.setRoleReadAccess(client.get('name'), true);
                                 recipe.setACL(acl);
                                 recipesToSave.push(recipe);
-                                recipes.push(recipe);
                             }
 							
                         }
-                        //recipes = _.union(recipesToSave, newRecipes);
+                        recipes = _.union(recipesToSave, newRecipes);
 						
-			var tempRecipes = [];
-			var countRecipe = 0;
-			
-			for ( var z = 0; z < recipesToSave.length; z++){
-				countRecipe++;
-				tempRecipes.push(recipesToSave[z]);
-				if(countRecipe>50){
-					Parse.Object.saveAll(tempRecipes);
-					tempRecipes = [];
-					countRecipe=0;
-				}             														
-			}
-			
-//			if(countRecipe > 0) {
-				return Parse.Object.saveAll(tempRecipes);
-//			}
+						var tempRecipes = [];
+						var countRecipe =0;
+						
+						for ( var z = 0; z < recipesToSave.length; z++){
+							countRecipe++;
+							tempRecipes.push(recipesToSave[z]);
+							if(countRecipe>10 || z==(recipesToSave.length-1)){
+								Parse.Object.saveAll(tempRecipes);
+								tempRecipes = [];
+								countRecipe=0;
+							}             														
+						}
+                    }).then(function() {
+						Parse.Object.destroyAll(audit.get('sales'), { success: function(success) {
+								audit.set('sales', []);
+								audit.save();
+								
+							}
+						});	
+
+						var SaleO = Parse.Object.extend('Sale');
+						var saleQueryO = new Parse.Query(SaleO);
+						saleQueryO.equalTo('audit_id', audit.id);
+						saleQueryO.limit(1000);
+						var salesRemoved = saleQueryO.collection();
+
+						Parse.Promise.when([salesRemoved.fetch()]).then(function(results) {
+							var tempSales = [];
+						  	salesRemoved.forEach(function(oneSale) {
+								tempSales.push(oneSale);
+							});
+							Parse.Object.destroyAll(tempSales);
+						});						
                     }).then(function() {
                         var sales = [];
-                        Parse.Object.destroyAll(audit.get('sales'));
+//                        Parse.Object.destroyAll(audit.get('sales'));
                         for (var i = start; i < end; i++) {
                             var recipe = null;
                             var name = "",
@@ -741,45 +723,30 @@
                                 var acl = new Parse.ACL();
                                 acl.setRoleWriteAccess('Administrator', true);
                                 acl.setRoleReadAccess(client.get('name'), true);
-  								sale.set("audit", audit);
+  								sale.set("audit_id", audit.id);
                                 sale.setACL(acl);
                                 sales.push(sale);
                             }
                         }
                         audit.set('sales', []);
-			audit.save();
-			
-			var SaleO = Parse.Object.extend('Sale');
-			var saleQueryO = new Parse.Query(SaleO);
-			saleQueryO.equalTo('audit', audit);
-			saleQueryO.limit(1000);
-			saleQueryO.find().then(function(saleso) {
-				Parse.Object.destroyAll(saleso);
-			}).then(function(success) {
-				var tempSales = [];
-				var countSales = 0;
-				var y = 0;
-				
-				for (y = 0; y < sales.length; y++) {
-					countSales++;
-					tempSales.push(sales[y]);
-					if(countSales>50){
-						Parse.Object.saveAll(tempSales);
-						tempSales = [];
-						countSales = 0;
-					}             														
-				}
-				if(tempSales.length>0) {
-					return Parse.Object.saveAll(tempSales);
-				}
-			});
-						
-						
- //                       return Parse.Object.saveAll(sales);
-						
+						audit.save().then(function(audit) {
+							var tempSales = [];
+							var countSales = 0;
+							var y = 0;
+							
+							for (y = 0; y < sales.length; y++) {
+								countSales++;
+								tempSales.push(sales[y]);
+								if(countSales>5 || y==(sales.length-1)){
+									Parse.Object.saveAll(tempSales);
+									
+									tempSales = [];
+									countSales = 0;
+								}             														
+							}
+						}, function(error) {
+						});
                     }).then(function(sales) {
-//                        audit.set('sales', sales);
-//                       audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
 
