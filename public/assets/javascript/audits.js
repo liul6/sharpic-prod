@@ -587,7 +587,7 @@
 
 					var newRecipes = [];
 					
-					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch(), salesRemoved.fetch()]).then(function() {
+					Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function() {
 						newNonFoodRecipes.add(newFoodRecipes.models);
 						newFoodRecipes.models = [];
 						
