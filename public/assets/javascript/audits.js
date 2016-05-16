@@ -594,7 +594,7 @@
                             });
                         });
                         return promise;    
-                    }).then(function() {
+                    }).then(function(error) {
                     });                
                 }
             }
