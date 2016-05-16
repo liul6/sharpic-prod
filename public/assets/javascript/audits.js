@@ -594,8 +594,9 @@
                             });
                         });
                         return promise;    
-                    }).then(function(error) {
-                    });                
+                    }).then(function(result) {
+                        }, function(error) {
+                    });
                 }
             }
         });
