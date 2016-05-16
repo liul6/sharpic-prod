@@ -566,45 +566,38 @@
                     query.exists('recipeItems');
                     query.descending('updatedAt');
                     query.limit(1000);
-                    var newNonFoodRecipes=query.collection();
-                                        
+
                     var foodrecipequery = new Parse.Query(Recipe);
                     foodrecipequery.equalTo('client', client);
                     foodrecipequery.equalTo('food', true);
                     foodrecipequery.limit(1000);
-                    var newFoodRecipes=foodrecipequery.collection();
-                        
-                    Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function(results) {
-                        newNonFoodRecipes.add(newFoodRecipes.models);
-                        newFoodRecipes.models = [];
-                        
-                        newNonFoodRecipes.forEach(function(oneRecipe) {
-                            newRecipes.push(oneRecipe);
-                        });
-                    });
-                    
-                    if(newRecipes.length<=0)
-                        validated = false;
-                }
-                
-                if(validated) {
+
                     var salequery = new Parse.Query(Sale);
                     salequery.equalTo('audit_id', audit.id);
                     salequery.limit(1000);
 
-                    validated = false;
-                    salequery.find().then(function (oldsales) {
-                        Parse.Object.destroyAll(oldsales, { success: function(success) {
-                                    validated = true;
-                                },
-                                error: function(error) { 
-                                    validated = false;
-                                }
+                    query.find().then(function(allvalidrecipes) {
+                        for(var s=0; s<allvalidrecipes.length; s++) {
+                            newRecipes.add(allvalidrecipes[s])
+                        }
+                        return foodrecipequery.find();
+                    }).then(function(allfoodrecipes) {
+                        for(var s1=0; s1<allfoodrecipes.length; s1++) {
+                            newRecipes.add(allfoodrecipes[s1])
+                        }
+                        return salequery.find();
+                    }).then(function(oldsales) {
+                        var promise = Parse.Promise.as();
+                        _.each(oldsales, function(oldsale) {
+                            promise = promise.then(function() {
+                                return oldsale.destroy();
+                            });
                         });
-                    });
+                        return promise;    
+                    }).then(function() {
+                    });                
                 }
                 
-                 
                 if(validated){
                     $auditsTable.show();
                     $activity.activity(false);
