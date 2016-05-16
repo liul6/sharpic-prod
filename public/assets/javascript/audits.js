@@ -597,18 +597,6 @@
                     }).then(function() {
                     });                
                 }
-                
-                if(validated){
-                    $auditsTable.show();
-                    $activity.activity(false);
-
-                    $successAlert.show();
-                }
-                else {
-                    $auditsTable.show();
-                    $activity.activity(false);
-                    $errorAlert.show();
-                }
             }
         });
     });
