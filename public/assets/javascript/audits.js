@@ -369,7 +369,7 @@
         }
         query.include('product.size');
         query.include('location');
-        query.limit(1000);
+        query.limit('1000');
         if (!collection) {
             collection = query.collection();
         } else {
@@ -464,7 +464,6 @@
         $activity.activity();
         var file = this.files[0];
         var type = "Valante";
-        
         Papa.parse(file, {
             complete: function (results) {
                 var validated = false;
@@ -506,7 +505,6 @@
                         type = "TouchBistro";
                     }
                 }
-
                 if (!validated) {
                     titles = ["class_code", "desc_a", "code", "desc_b", "sum_qnty", "sum_price", "type"];
                     if (values[0].length == 7) {
@@ -522,7 +520,6 @@
                         type = "SilverWare";
                     }
                 }
-
                 if (!validated) {
                     titles = ["Class", "Item", "Net Sales", "Disc", "Sales", "Qty"];
                     if (values[0].length == 6) {
@@ -538,7 +535,6 @@
                         type = "SilverWare2";
                     }
                 }
-
                 if (!validated) {
                     titles = ["Rank", "Num", "Item Name", "Sold", "Sold", "Amount", "Cost", "Profit", "Cost %", "Sales"];
                     if (values[0].length = titles.length) {
@@ -554,54 +550,153 @@
                         type = "Cibo";
                     }
                 }
-                
-                var newRecipes = [];
-                
                 if (validated) {
                     var Recipe = Parse.Object.extend('Recipe');
                     var Sale = Parse.Object.extend('Sale');
                     var query = new Parse.Query(Recipe);
                     query.equalTo('client', client);
-                    query.equalTo('ignore', false);
                     query.exists('recipeItems');
                     query.descending('updatedAt');
-                    query.limit(1000);
-
-                    var foodrecipequery = new Parse.Query(Recipe);
-                    foodrecipequery.equalTo('client', client);
-                    foodrecipequery.equalTo('food', true);
-                    foodrecipequery.limit(1000);
-
-                    var salequery = new Parse.Query(Sale);
-                    salequery.equalTo('audit_id', audit.id);
-                    salequery.limit(1000);
-
-                    query.find().then(function(allvalidrecipes) {
-                        for(var s=0; s<allvalidrecipes.length; s++) {
-                            newRecipes.add(allvalidrecipes[s])
+                    query.limit('1000');
+                    var recipes;
+                    var start = 1;
+                    if (type == "TouchBistro") {
+                        start = 3;
+                    }
+                    var end = values.length - 1;
+                    if (type == "TouchBistro") {
+                        end = values.length;
+                    }
+                    query.find().then(function (newRecipes) {
+                        var recipesToSave = [];
+                        for (var i = start; i < end; i++) {
+                            var recipe = null;
+                            var name = "",
+                                amount = 0,
+                                gross = 0;
+                            if (type == "Valante") {
+                                name = values[i][1];
+                                amount = parseInt(values[i][10]);
+                                gross = parseFloat(values[i][2]);
+                            } else if (type == "TouchBistro") {
+                                name = values[i][0];
+                                amount = parseInt(values[i][1]);
+                                gross = parseFloat(values[i][2].replace(/[^0-9\.]+/g, ""));
+                            } else if (type == "SilverWare") {
+                                name = values[i][3];
+                                amount = values[i][4];
+                                gross = values[i][5];
+                            } else if (type == "SilverWare2") {
+                                name = values[i][1];
+                                amount = values[i][5];
+                                gross = values[i][4];
+                            } else if (type == "Cibo") {
+                                name = values[i][2];
+                                amount = parseInt(values[i][3]);
+                                gross = parseFloat(values[i][5].replace(/[^0-9\.]+/g, ""));
+                            }
+                            for (var j = 0; j < newRecipes.length; j++) {
+                                var aRecipe = newRecipes[j];
+                                if (aRecipe.get('name') == name) {
+                                    recipe = aRecipe;
+                                    if (!recipe.get('name')) {
+                                        recipe.set('name', name);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!recipe) {
+                                recipe = new Recipe({
+                                    name: name,
+                                    client: client,
+                                    ignore: false
+                                });
+                                var acl = new Parse.ACL();
+                                acl.setRoleWriteAccess('Administrator', true);
+                                acl.setRoleReadAccess(client.get('name'), true);
+                                recipe.setACL(acl);
+                                recipesToSave.push(recipe);
+                            }
                         }
-                        return foodrecipequery.find();
-                    }).then(function(allfoodrecipes) {
-                        for(var s1=0; s1<allfoodrecipes.length; s1++) {
-                            newRecipes.add(allfoodrecipes[s1])
+                        recipes = _.union(recipesToSave, newRecipes);
+                        return Parse.Object.saveAll(recipesToSave);
+                    }).then(function() {
+                        var sales = [];
+                        Parse.Object.destroyAll(audit.get('sales'));
+                        for (var i = start; i < end; i++) {
+                            var recipe = null;
+                            var name = "",
+                                amount = 0,
+                                gross = 0;
+                            if (type == "Valante") {
+                                name = values[i][1];
+                                amount = parseInt(values[i][10]);
+                                gross = parseFloat(values[i][2]);
+                            } else if (type == "TouchBistro") {
+                                name = values[i][0];
+                                amount = parseInt(values[i][1]);
+                                gross = parseFloat(values[i][2].replace(/[^0-9\.]+/g,""));
+                            } else if (type == "SilverWare") {
+                                name = values[i][3];
+                                amount = parseInt(values[i][4]);
+                                gross = parseFloat(values[i][5]);
+                            } else if (type == "SilverWare2") {
+                                name = values[i][1];
+                                amount = parseInt(values[i][5]);
+                                gross = parseFloat(values[i][4]);
+                            } else if (type == "Cibo") {
+                                name = values[i][2];
+                                amount = parseInt(values[i][3]);
+                                gross = parseFloat(values[i][5].replace(/[^0-9\.]+/g, ""));
+                            }
+                            for (var j = 0; j < recipes.length; j++) {
+                                var aRecipe = recipes[j];
+                                if (aRecipe.get('name') == name) {
+                                    recipe = aRecipe;
+                                    if (!recipe.get('name')) {
+                                        recipe.set('name', name);
+                                    }
+                                    break;
+                                }
+                            }
+                            if (amount && recipe && !recipe.get('ignore')) {
+                                var sale = new Sale({
+                                    recipe: recipe,
+                                    amount: amount,
+                                    price: parseFloat((gross / amount).toFixed(2))
+                                });
+                                var acl = new Parse.ACL();
+                                acl.setRoleWriteAccess('Administrator', true);
+                                acl.setRoleReadAccess(client.get('name'), true);
+                                sale.setACL(acl);
+                                sales.push(sale);
+                            }
                         }
-                        return salequery.find();
-                    }).then(function(oldsales) {
-                        var promise = Parse.Promise.as();
-                        _.each(oldsales, function(oldsale) {
-                            promise = promise.then(function() {
-                                return oldsale.destroy();
-                            });
-                        });
-                        return promise;    
-                    }).then(function(result) {
-                        }, function(error) {
+
+                        return Parse.Object.saveAll(sales);
+                    }).then(function(sales) {
+                        //audit.set('sales', sales);
+						var objectIds = sales.map(function(sale) { return sale.id; });
+						audit.set('saleIds',objectIds);
+                        audit.save();
+                        $auditsTable.show();
+                        $activity.activity(false);
+                        $successAlert.show();
+                    }, function(error) {
+                        audit.set('sales', []);
+                        audit.save();
+                        $auditsTable.show();
+                        $activity.activity(false);
+                        $errorAlert.show();
                     });
+                } else {
+                    $activity.activity(false);
+                    $errorAlert.show();
                 }
             }
         });
     });
- 
+
     function hideAll() {
         $auditNotes.hide();
         $locationSelect.hide();
