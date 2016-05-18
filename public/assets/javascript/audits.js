@@ -687,7 +687,7 @@
                             countSales++;
                             tempSales.push(sales[y]);
                             if(countSales>5 || y ==(sales.length-1)){
-                                var savedSales = Parse.Object.saveAll(tempSales{
+                                var savedSales = Parse.Object.saveAll(tempSales);
                                 for(int p=0;i<savedSales.length;p++){
                                     allSavedSales.push(savedSales[p]);
                                 }
