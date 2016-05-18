@@ -681,7 +681,7 @@
                         return Parse.Object.saveAll(sales);
                     }).then(function(sales) {
                         var objectIds = sales.map(function(sale) { return sale.id; });
-                        audit.set('saleIds',objectIds);
+                        audit.set('sale_ids',objectIds);
                         audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
