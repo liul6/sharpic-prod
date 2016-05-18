@@ -623,7 +623,7 @@
                     }).then(function() {
                         Parse.Object.destroyAll(audit.get('sales'));
                         audit.set('sales',[]);
-                        audit.set('saleIds',objectIds);
+                        audit.set('saleIds',"");
                         return audit.save();
                     }).then(function() {
                         var sales = [];
