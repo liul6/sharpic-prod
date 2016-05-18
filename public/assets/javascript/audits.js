@@ -620,11 +620,11 @@
                         }
                         recipes = _.union(recipesToSave, newRecipes);
                         return Parse.Object.saveAll(recipesToSave);
-                    }).then(function() {
-                        Parse.Object.destroyAll(audit.get('sales'));
-                        audit.set('sales',[]);
-                        audit.set('saleIds',"");
-                        return audit.save();
+//                    }).then(function() {
+//                        Parse.Object.destroyAll(audit.get('sales'));
+//                        audit.set('sales',[]);
+//                        audit.set('saleIds',"");
+//                        return audit.save();
                     }).then(function() {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
@@ -678,26 +678,7 @@
                             }
                         }
 
-                        var tempSales = [];
-                        var countSales = 0;
-                        var y = 0;
-                        
-                        var allSavedSales = [];
-                        for (y = 0; y < sales.length; y++) {
-                            countSales++;
-                            tempSales.push(sales[y]);
-                            if(countSales>5 || y ==(sales.length-1)){
-                                var savedSales = Parse.Object.saveAll(tempSales);
-                                for(var p=0;i<savedSales.length;p++){
-                                    allSavedSales.push(savedSales[p]);
-                                }
-                                
-                                tempSales = [];
-                                countSales = 0;
-                            }                                                                     
-                        }
-                        
-                        return allSavedSales;
+                        return Parse.Object.saveAll(sales);
                     }).then(function(sales) {
                         var objectIds = sales.map(function(sale) { return sale.id; });
                         audit.set('saleIds',objectIds);
