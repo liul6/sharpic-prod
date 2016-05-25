@@ -687,7 +687,7 @@
                             tempSales.push(sales[y]);
                             if(countSales>5 || (y==(sales.length-1))){
                                 Parse.Object.saveAll(tempSales, {
-                                    success: function(objs) {
+                                    success: function(tempSales) {
                                     },
                                     error: function(error) { 
                                         return Parse.Promise.error("Failed to save sales");
