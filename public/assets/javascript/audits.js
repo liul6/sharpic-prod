@@ -677,12 +677,25 @@
                                 sales.push(sale);
                             }
                         }
+                        
+                        var tempSales = [];
+						var countSales = 0;
+						var y = 0;
+                        for (y = 0; y < sales.length; y++) {
+							countSales++;
+							tempSales.push(sales[y]);
+							if(countSales>5 || (y==(sales.length-1))){
+								Parse.Object.saveAll(tempSales);
+								tempSales = [];
+								countSales = 0;
+							}             														
+						}
 
-                        return Parse.Object.saveAll(sales);
+//                        return Parse.Object.saveAll(sales);
                     }).then(function(sales) {
-                        var objectIds = sales.map(function(sale) { return sale.id; });
-                        audit.set('sale_ids',objectIds);
-                        audit.save();
+//                        var objectIds = sales.map(function(sale) { return sale.id; });
+//                        audit.set('sale_ids',objectIds);
+//                        audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
                         $successAlert.show();
