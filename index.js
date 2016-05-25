@@ -10,7 +10,8 @@ var parseExpressHttpsRedirect = require('parse-express-https-redirect');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 
-var databaseUri = 'mongodb://admin:calypso@ds023042.mlab.com:23042/sharpic-dev';
+var databaseUri = 'mongodb://admin:calypso@ds015483-a0.mlab.com:15483,ds015483-a1.mlab.com:15483/sharpic?replicaSet=rs-ds015483';
+//'mongodb://admin:calypso@ds023042.mlab.com:23042/sharpic-dev';
 //var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
@@ -18,7 +19,8 @@ if (!databaseUri) {
 }
 
 var api = new ParseServer({
-  databaseURI: 'mongodb://admin:calypso@ds023042.mlab.com:23042/sharpic-dev',
+  databaseURI: 'mongodb://admin:calypso@ds015483-a0.mlab.com:15483,ds015483-a1.mlab.com:15483/sharpic?replicaSet=rs-ds015483',
+  //'mongodb://admin:calypso@ds023042.mlab.com:23042/sharpic-dev',
   cloud: __dirname + '/cloud/main.js',
   appId: 'hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX',
   masterKey: 'x1S3MP94OpM2eglWnKLTbXMipkCM5pBf5Eha2Ckn', //Add your master key here. Keep it secret!
