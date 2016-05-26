@@ -52,21 +52,8 @@
         ignoreRow: function (e) {
             e.preventDefault();
 
-            var Sale = Parse.Object.extend('Sale'); 
-            var query = new Parse.Query(Sale);  
-        
-            query.include('recipe');
-            query.equalTo('recipe', this.model);
-            
-            query.find({
-                success: function(results) {
-                   console.error("Error: the recipe is used in sale, cannot be ignored!");
-                },
-                error: function(error) {
-                    this.model.set('ignore', true);
-                    this.model.collection.remove(this.model);
-                }
-            });
+            this.model.set('ignore', true);
+            this.model.collection.remove(this.model);
         },
         render: function () {
             this.$el.html(this.template());
