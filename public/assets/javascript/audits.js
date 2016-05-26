@@ -681,18 +681,29 @@
                         var countSales = 0;
                         var y = 0;
                         
-                        for (y = 0; y < sales.length; y++) {
-                            countSales++;
-                            tempSales.push(sales[y]);
-                            if(countSales>5 || (y==(sales.length-1))){
-//                                Parse.Object.saveAll(tempSales);
-                                
-                                tempSales = [];
-                                countSales = 0;
-                            }                                                                     
-                        }
-//                        return Parse.Object.saveAll(tempSales);                        
-                       return Parse.Object.saveAll(sales);
+                        var tempSales = [];  
+                        var countSales = 0;  
+                        var y = 0;  
+                          
+                        for (y = 0; y < sales.length; y++) {  
+                            countSales++;  
+                            tempSales.push(sales[y]);  
+                            if(countSales>5 || (y==(sales.length-1))){  
+                                Parse.Object.saveAll(tempSales, {  
+                                    success: function(tempSales) {  
+                                    },  
+                                    error: function(error) {   
+                                        return Parse.Promise.error("Failed to save sales");  
+                                    }  
+                                });  
+                                  
+                                tempSales = [];  
+                                countSales = 0;  
+                            }                                                                       
+                        }  
+                        return Parse.Promise.as(sales);  
+         
+//                       return Parse.Object.saveAll(sales);
                     }).then(function(sales) {
                         audit.set('sales',sales);
                         audit.save();
