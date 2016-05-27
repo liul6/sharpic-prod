@@ -623,24 +623,18 @@
                     }).then(function() {
                         var oldsales = audit.get('sales');
                         if(oldsales){
-                            Parse.Object.destroyAll(oldsales);
-                            audit.set('sales',[]);
+                            return Parse.Object.destroyAll(oldsales);
                         }
-                        
-                        var objectIds = audit.get('saleIds');
-                        if(objectIds){
+                        else {
                         	var salesQuery = new Parse.Query(Sale);
-				            salesQuery.containedIn('objectId', objectIds);
-				            salesQuery.limit('1000');
+				salesQuery.containedIn('objectId', objectIds);
+				salesQuery.limit('1000');
 				            
-				            salesQuery.find().then(function (tempSales) {
-				                Parse.Object.destroyAll(tempSales);
-                                audit.set('saleIds',[]);
-				            });
-			            }
-                        
-                        return audit.save();
-                    }).then(function(audit) {
+				salesQuery.find().then(function (tempSales) {
+			            return Parse.Object.destroyAll(tempSales);
+				});
+                        }
+                    }).then(function() {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
                         for (var i = start; i < end; i++) {
@@ -716,13 +710,13 @@
                                 countSales = 0;  
                             }                                                                       
                         }  
-                        return Parse.Promise.as(sales);  
-         
+                        var saleIds = sales.map(function(sale) { return sale.id; });
+                        return Parse.Promise.as(saleIds);  
 //                       return Parse.Object.saveAll(sales);
-                    }).then(function(sales) {
+                    }).then(function(saleIds) {
 //                        audit.set('sales',sales);
-                        var objectIds = sales.map(function(sale) { return sale.id; });
-                        audit.set('saleIds',objectIds);
+                        audit.set('saleIds',saleIds);
+                        audit.set('sales',[]);
                         audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
