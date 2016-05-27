@@ -621,21 +621,6 @@
                         recipes = _.union(recipesToSave, newRecipes);
                         return Parse.Object.saveAll(recipesToSave);
                     }).then(function() {
-                        var oldsales = audit.get('sales');
-                        if(oldsales){
-                            return Parse.Object.destroyAll(oldsales);
-                        }
-                        else {
-                        	var salesQuery = new Parse.Query(Sale);
-                        	var objectIds = audit.get('saleIds');
-				salesQuery.containedIn('objectId', objectIds);
-				salesQuery.limit('1000');
-				            
-				salesQuery.find().then(function (tempSales) {
-			            return Parse.Object.destroyAll(tempSales);
-				});
-                        }
-                    }).then(function() {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
                         for (var i = start; i < end; i++) {
@@ -711,13 +696,13 @@
                                 countSales = 0;  
                             }                                                                       
                         }  
-                        var saleIds = sales.map(function(sale) { return sale.id; });
-                        return Parse.Promise.as(saleIds);  
+//                      var saleIds = sales.map(function(sale) { return sale.id; });
+                        return Parse.Promise.as(sales);  
 //                       return Parse.Object.saveAll(sales);
-                    }).then(function(saleIds) {
-//                        audit.set('sales',sales);
-                        audit.set('saleIds',saleIds);
-                        audit.set('sales',[]);
+                    }).then(function(sales) {
+                        audit.set('sales',sales);
+//                      audit.set('saleIds',saleIds);
+//                      audit.set('sales',[]);
                         audit.save();
                         $auditsTable.show();
                         $activity.activity(false);
