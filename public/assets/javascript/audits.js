@@ -629,6 +629,7 @@
                         
                         var objectIds = audit.get('saleIds');
                         if(objectIds){
+                        	var salesQuery = new Parse.Query(Sale);
 				            salesQuery.containedIn('objectId', objectIds);
 				            salesQuery.limit('1000');
 				            
