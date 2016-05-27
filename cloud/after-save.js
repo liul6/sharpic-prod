@@ -57,12 +57,12 @@ Parse.Cloud.afterSave('Sale', function(request) {
     var sale = request.object;
     var audit = sale.get('audit');
 
-//	if(sale){
-//		if(audit){
-//			audit.add('sales', sale);
-//			audit.save();
-//		}
-//	}
+    if(sale){
+	  if(audit){
+		audit.add('sales', sale);
+		audit.save();
+	  }
+     }
 	
 //	sale.unset('audit');
 //	sale.save();
