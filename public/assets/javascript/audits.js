@@ -620,12 +620,26 @@
                         }
                         recipes = _.union(recipesToSave, newRecipes);
                         return Parse.Object.saveAll(recipesToSave);
-//                    }).then(function() {
-//                        Parse.Object.destroyAll(audit.get('sales'));
-//                        audit.set('sales',[]);
-//                        audit.set('saleIds',"");
-//                        return audit.save();
                     }).then(function() {
+                        var oldsales = audit.get('sales');
+                        if(oldsales){
+                            Parse.Object.destroyAll(oldsales);
+                            audit.set('sales',[]);
+                        }
+                        
+                        var objectIds = audit.get('saleIds');
+                        if(objectIds){
+				            salesQuery.containedIn('objectId', objectIds);
+				            salesQuery.limit('1000');
+				            
+				            salesQuery.find().then(function (tempSales) {
+				                Parse.Object.destroyAll(tempSales);
+                                audit.set('saleIds',[]);
+				            });
+			            }
+                        
+                        return audit.save();
+                    }).then(function(audit) {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
                         for (var i = start; i < end; i++) {
