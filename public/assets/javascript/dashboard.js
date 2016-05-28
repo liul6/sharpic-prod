@@ -387,9 +387,9 @@ $(document).ready(function() {
     
     var sessionToken = $('#session').text();
     if (!Parse.User.current() || Parse.User.current().getSessionToken() != sessionToken) {
-//        Parse.User.become(sessionToken).then(function() {
+            Parse.User.become(sessionToken).then(function() {
             finishInit();
-//        });
+        });
     } else {
         finishInit();
     }
