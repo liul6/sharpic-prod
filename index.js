@@ -148,7 +148,7 @@ app.post('/change-password', function(req, res) {
 app.use('/public', express.static(path.join(__dirname, '/public')));
 
 // Serve the Parse API on the /parse URL prefix
-var mountPath = process.env.PARSE_MOUNT || '/parse';
+var mountPath = process.env.PARSE_MOUNT || '/1';
 app.use(mountPath, api);
 
 //app.listen();
