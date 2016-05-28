@@ -24,7 +24,7 @@ var api = new ParseServer({
   cloud: __dirname + '/cloud/main.js',
   appId: 'hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX',
   masterKey: 'x1S3MP94OpM2eglWnKLTbXMipkCM5pBf5Eha2Ckn', //Add your master key here. Keep it secret!
-  serverURL: 'http://sharpic-dev.herokuapp.com:1337/parse',  // Don't forget to change to https if needed
+  serverURL: 'http://sharpic-dev.herokuapp.com/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   }
@@ -68,7 +68,7 @@ app.get('/', function(req, res) {
 });
 
 Parse.initialize('hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX', 'I7HJPTMofOAiG66s0EXKAShUOPyK0mN7z9qyaggY');
-Parse.serverURL = 'http://sharpic-dev.herokuapp.com:1337/parse';
+Parse.serverURL = 'http://sharpic-dev.herokuapp.com/parse';
 
 //app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 } }));
 
