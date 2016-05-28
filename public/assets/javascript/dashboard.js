@@ -385,13 +385,22 @@ $(document).ready(function() {
     Parse.initialize('hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX', 'I7HJPTMofOAiG66s0EXKAShUOPyK0mN7z9qyaggY');
     Parse.serverURL = 'http://sharpic-dev.herokuapp.com/parse';
     
-    var sessionToken = $('#session').text();
+    var sessionToken = $('#session').text
+    
+    Parse.User.become(req.session.token ? req.session.token : "NoTokenFound").then(function (user) {
+        ken).then(function() {
+        finishInit();
+    }, function (error) {
+        console.log(error);
+        res.sendStatus(200);
+    });
+
     if (!Parse.User.current() || Parse.User.current().getSessionToken() != sessionToken) {
             Parse.User.become(sessionToken).then(function() {
-            finishInit();
+    //        finishInit();
         });
     } else {
-        finishInit();
+    //    finishInit();
     }
 
     function finishInit() {
