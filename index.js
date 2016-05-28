@@ -68,7 +68,7 @@ app.get('/', function(req, res) {
 });
 
 Parse.initialize('hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX', 'I7HJPTMofOAiG66s0EXKAShUOPyK0mN7z9qyaggY');
-Parse.serverURL = 'http://sharpic-dev.herokuapp.com/parse';
+//Parse.serverURL = 'http://sharpic-dev.herokuapp.com/parse';
 
 //app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 } }));
 
