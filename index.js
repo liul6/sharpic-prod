@@ -82,6 +82,7 @@ app.post('/login', function(req, res) {
             req.session.temporaryPassword = true;
             res.redirect('/change-password');
         } else {
+            req.session.token = user._sessionToken;
             res.redirect('/dashboard');
         }
     }, function(error) {
