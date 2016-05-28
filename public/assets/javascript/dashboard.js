@@ -389,12 +389,12 @@ $(document).ready(function() {
 
     if (!Parse.User.current() || Parse.User.current().getSessionToken() != sessionToken) {
             Parse.User.become(sessionToken).then(function() {
-                finishInit();
+//                finishInit();
         });
     } else {
-        finishInit();
+//        finishInit();
     }
-//finishInit();
+finishInit();
 
     function finishInit() {
 
