@@ -375,13 +375,13 @@
         } else {
             collection.query = query;
         }
-//        collection.comparator = function (entry) {
-//            if (entry.get('product')) {
-//                return entry.get('product').get('name');
-//            } else {
-//                return "zzz";
-//            }
-//        };
+        collection.comparator = function (entry) {
+            if (entry.get('product')) {
+                return entry.get('product').get('name');
+            } else {
+                return "zzz";
+            }
+        };
         collection.fetch().then(function () {
             if (!grid) {
                 grid = new Backgrid.Grid({
