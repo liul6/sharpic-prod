@@ -385,7 +385,7 @@ $(document).ready(function() {
     Parse.initialize('hTNcUCXxaxgNLUR6vhLoUliLnadu3shkNUUCsnTX', 'I7HJPTMofOAiG66s0EXKAShUOPyK0mN7z9qyaggY');
 //    Parse.serverURL = 'http://sharpic-dev.herokuapp.com';
     
-    var sessionToken = $('#session').text;
+    var sessionToken = $('#session').text();
 
     if (!Parse.User.current() || Parse.User.current().getSessionToken() != sessionToken) {
 //            Parse.User.become(sessionToken).then(function() {
