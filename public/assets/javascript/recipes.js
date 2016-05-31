@@ -112,6 +112,7 @@
                 })},
                 {name: "ounces", label: "Ounces", cell: "number"},
                 {name: "fulls", label: "Fulls", cell: "integer"},
+                {name: "retailPrice", label: "Retail Price", cell: "number"},
                 {name: "id", label: "", cell: ModalDeleteCell, editable: false, sortable: false}
             ]
         },
