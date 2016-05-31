@@ -95,7 +95,7 @@
                         var ounces = (object.get('ounces') ? ' ' + object.get('ounces') + ' ounces' : '');
                         var fulls = (object.get('fulls') ? ' ' + object.get('fulls') + ' fulls' : '');
                         var retailPrice = (object.get('retailPrice') ? ' ' + object.get('retailPrice') + ' retail$' : '');
-                        return object.get('product').get('name') + ' ' + size + ounces + fulls;
+                        return object.get('product').get('name') + ' ' + size + ounces + fulls + retailPrice;
                     } else {
                         return "";
                     }
