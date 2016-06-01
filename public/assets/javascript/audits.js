@@ -675,8 +675,14 @@
 
                        return Parse.Object.saveAll(sales);
                     }).then(function(sales) {
-                        audit.set('sales',sales);
-//                      audit.set('saleIds',saleIds);
+//                        audit.set('sales',sales);
+                        
+                        var saleIds = [];
+                        for(var i=0; i<sales..length; i++) {
+                            saleIds.push(sales[i].id);
+                        }
+                        
+                        audit.set('saleIds',saleIds);
 //                      audit.set('sales',[]);
                         audit.save();
                         $auditsTable.show();
