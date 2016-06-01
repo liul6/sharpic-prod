@@ -196,7 +196,8 @@
             if(nowAudit.get('sales')) {
                 objectIds = nowAudit.get('sales').map(function(sale) { return sale.id; });
             }
-            else if(!objectIds || objectIds.length<=0) {
+            
+            if(!objectIds || objectIds.length<=0) {
                 objectIds = nowAudit.get('saleIds')
             }
             
