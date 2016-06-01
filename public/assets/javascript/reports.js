@@ -191,11 +191,15 @@
 
             $activity.activity();
             var salesQuery = new Parse.Query(Sale);
-            var objectIds = nowAudit.get('sales').map(function(sale) { return sale.id; });
-			if(!objectIds || objectIds.length<=0) {
-				objectIds = nowAudit.get('saleIds')
-			}
-			
+            var objectIds = [];
+            
+            if(nowAudit.get('sales')) {
+                objectIds = nowAudit.get('sales').map(function(sale) { return sale.id; });
+            }
+            else if(!objectIds || objectIds.length<=0) {
+                objectIds = nowAudit.get('saleIds')
+            }
+            
             salesQuery.containedIn('objectId', objectIds);
             salesQuery.include('recipe.recipeItems');
             salesQuery.limit('1000');
@@ -238,13 +242,13 @@
             nowEntriesNext = nowEntriesNextQuery.collection();
             modifierItems = modifiersQuery.collection();
 
-			var test1 = [sales.fetch()];
-			var test2 = [beforeEntries.fetch()];
-			var test3 = [beforeEntriesNext.fetch()];
-			var test4 = [nowEntries.fetch()];
-			var test5 = [nowEntriesNext.fetch()];
-			var test6 = [modifierItems.fetch()];
-			
+            var test1 = [sales.fetch()];
+            var test2 = [beforeEntries.fetch()];
+            var test3 = [beforeEntriesNext.fetch()];
+            var test4 = [nowEntries.fetch()];
+            var test5 = [nowEntriesNext.fetch()];
+            var test6 = [modifierItems.fetch()];
+            
             Parse.Promise.when([sales.fetch(), beforeEntries.fetch(), beforeEntriesNext.fetch(), nowEntries.fetch(), nowEntriesNext.fetch(), modifierItems.fetch()]).then(generateReport);
         }
     };
@@ -598,8 +602,8 @@
 
                 if (serving.get('name') == 'Pint') {
                     ['beforeTotalWeight', 'nowTotalWeight', 'currentTotalWeight', 'ouncesVariance', 'depleted', 'sold', 'currentSalesOunces'].forEach(function(field) { 
-						pintify(field); 
-					});
+                        pintify(field); 
+                    });
                 }
 
                 function addSuffix(field, suffix) {
@@ -616,12 +620,12 @@
                     }
                 }
 
-				function pintify(field) {
-					if (item.get(field) != '-') {
-						item.set(field, (parseFloat(item.get(field)) / 20).toFixed(2));
-						addSuffix(field, '');
-					}
-				}
+                function pintify(field) {
+                    if (item.get(field) != '-') {
+                        item.set(field, (parseFloat(item.get(field)) / 20).toFixed(2));
+                        addSuffix(field, '');
+                    }
+                }
 
                 var rowData = [];
                 rowData.push(item.get('product').get('name') + ' ' + item.get('product').get('size').get('name'));
@@ -894,7 +898,7 @@
             });
             AmCharts.makeChart("sales-chart", {
                 "type": "pie",
-            	"theme": "none",
+                "theme": "none",
                 "dataProvider": chartData,
                 "valueField": "amount",
                 "titleField": "title",
@@ -987,8 +991,8 @@
                 "categoryAxis": {
                     "gridPosition": "start"
                 },
-            	"exportConfig":{
-            		"menuTop":"20px",
+                "exportConfig":{
+                    "menuTop":"20px",
                     "menuRight":"20px",
                     "menuItems": [{
                     "icon": '/lib/3/images/export.png',
