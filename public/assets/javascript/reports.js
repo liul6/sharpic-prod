@@ -192,6 +192,10 @@
             $activity.activity();
             var salesQuery = new Parse.Query(Sale);
             var objectIds = nowAudit.get('sales').map(function(sale) { return sale.id; });
+			if(!objectIds || objectIds.length<=0) {
+				objectIds = nowAudit.get('saleIds')
+			}
+			
             salesQuery.containedIn('objectId', objectIds);
             salesQuery.include('recipe.recipeItems');
             salesQuery.limit('1000');
