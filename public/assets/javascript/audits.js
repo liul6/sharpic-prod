@@ -678,7 +678,7 @@
 //                        audit.set('sales',sales);
                         
                         var saleIds = [];
-                        for(var i=0; i<sales..length; i++) {
+                        for(var i=0; i<sales.length; i++) {
                             saleIds.push(sales[i].id);
                         }
                         
