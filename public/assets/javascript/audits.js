@@ -632,7 +632,7 @@
                         
                         return origsalesQuery.find();
                     }).then(function(origsales) {
-                        return Parse.Object.DestroyAll(origsales);                       
+                        return Parse.Object.destroyAll(origsales);                       
                     }).then(function() {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
