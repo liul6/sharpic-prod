@@ -621,6 +621,19 @@
                         recipes = _.union(recipesToSave, newRecipes);
                         return Parse.Object.saveAll(recipesToSave);
                     }).then(function() {
+                        var origsalesQuery = new Parse.Query(Sale);
+                        var objectIds = audit.get('saleIds'); 
+                        if(!objectIds || objectIds.length<=0) { 
+                            objectIds = audit.get('sales').map(function(sale) { return sale.id; }); 
+                        } 
+                        
+                        origsalesQuery.containedIn('objectId', objectIds);
+                        origsalesQuery.limit('1000');
+                        
+                        return origsalesQuery.find();
+                    }).then(function(origsales) {
+                        return Parse.Object.DestroyAll(origsales);                       
+                    }).then(function() {
                         var sales = [];
                         Parse.Object.destroyAll(audit.get('sales'));
                         for (var i = start; i < end; i++) {
