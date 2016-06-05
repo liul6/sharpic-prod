@@ -441,8 +441,8 @@ $(document).ready(function() {
                 case '#sales':
                     hideAll();
                     $(this).parent().addClass('active');
-                    $('#sale').show();
-                    audits.init();
+                    $('#sales').show();
+                    sales.init();
                     break;
                 case '#reports':
                     hideAll();
