@@ -438,6 +438,12 @@ $(document).ready(function() {
                     $('#audits').show();
                     audits.init();
                     break;
+                case '#sales':
+                    hideAll();
+                    $(this).parent().addClass('active');
+                    $('#sale').show();
+                    audits.init();
+                    break;
                 case '#reports':
                     hideAll();
                     $(this).parent().addClass('active');
