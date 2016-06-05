@@ -401,7 +401,7 @@ $(document).ready(function() {
         $('a').click(function () {
 
             function hideAll() {
-                ['users', 'clients', 'products', 'recipes', 'audits', 'reports'].forEach(function (field) {
+                ['users', 'clients', 'products', 'recipes', 'audits', 'reports', 'sales'].forEach(function (field) {
                     $('#' + field).hide();
                 });
                 $('#sidebar').children().removeClass('active');
