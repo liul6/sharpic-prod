@@ -64,7 +64,7 @@
         }
     });
 
-   var RecipeSelect2CellEditor = Backgrid.Extension.Select2CellEditor.extend({
+    var RecipeSelect2CellEditor = Backgrid.Extension.Select2CellEditor.extend({
         tagName: "input",
         attributes: {
             type: 'hidden'
@@ -131,7 +131,7 @@
             this.$el.empty();
             var model = this.model;
             if (model.get('recipe')) {
-                this.$el.append(model.get('recipe').get('name') + ' ' + model.get('recipe').get('size').get('name'));
+                this.$el.append(model.get('recipe').get('name');
             }
             this.delegateEvents();
             return this;
@@ -143,7 +143,7 @@
                 recipesQuery.get(element.context.id).then(function(recipe) {
                     var data = {
                         id: recipe.id,
-                        text: recipe.get('name') + ' ' + recipe.get('size').get('name')
+                        text: recipe.get('name')
                     };
                     callback(data);
                 });
@@ -156,14 +156,14 @@
                 recipesCollection = recipesQuery.collection();
                 recipesCollection.fetch().then(function(recipes) {
                     query.callback({results: _.map(recipes.models, function (recipe) {
-                        return {id: recipe.id, text: recipe.get('name') + ' ' + recipe.get('size').get('name')};
+                        return {id: recipe.id, text: recipe.get('name')};
                     })});
                 });
             }
         },
         editor: RecipeSelect2CellEditor
     });
-	
+    
     var columns = [{
         name: "recipe",
         label: "Recipe",
