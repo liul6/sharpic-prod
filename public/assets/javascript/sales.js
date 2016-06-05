@@ -186,7 +186,7 @@
         cell: DeleteCell
     }];
 
-    var audits = function() {};
+    var sales = function() {};
 
     var clientSelectChange = function() {
         hideAll();
