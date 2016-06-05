@@ -562,6 +562,6 @@
         }
     };
 
-    window.audits = new audits;
+    window.sales = new sales;
 
 })(window);
