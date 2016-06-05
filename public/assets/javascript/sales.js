@@ -539,7 +539,7 @@
         $errorAlert.hide();
     }
 
-    audits.prototype = {
+    sales.prototype = {
         init: function() {
             if (!client) {
                 hideAll();
