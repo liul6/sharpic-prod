@@ -150,9 +150,9 @@
                     $activity.activity(false);
 
                     if (!saleclientSelect) {
-                        saleclientSelect = new ClientSelect({id: 'audit-client-select-picker'});
-                        $('#audit-client-select').append(saleclientSelect.render().el);
-                        $('#audit-client-select-picker').selectpicker();
+                        saleclientSelect = new ClientSelect({id: 'sale-client-select-picker'});
+                        $('#sale-client-select').append(saleclientSelect.render().el);
+                        $('#sale-client-select-picker').selectpicker();
                     }
                     saleclientSelect.el.onchange = clientSelectChange;
                 });
