@@ -78,12 +78,12 @@
             var query = new Parse.Query(Sale);
             var objectIds = [];
             
-            if(nowAudit.get('sales')) {
-                objectIds = nowAudit.get('sales').map(function(sale) { return sale.id; });
+            if(audit.get('sales')) {
+                objectIds = audit.get('sales').map(function(sale) { return sale.id; });
             }
             
             if(!objectIds || objectIds.length<=0) {
-                objectIds = nowAudit.get('saleIds')
+                objectIds = audit.get('saleIds')
             }
             
             query.containedIn('objectId', objectIds);
