@@ -15,9 +15,9 @@
         $fileInput = $('#sale-audits-file-input'),
         $successAlert = $('#sales-upload-success'),
         $errorAlert = $('#sales-upload-error'),
-        $auditNotes = $('#sales-audit-notes'),
+        $auditNotes = $('#sales-audit-notes');
     
-        Sale = Parse.Object.extend({
+        var Sale = Parse.Object.extend({
             className: 'Sale',
             initialize: function() {
                 this.on('change', function() {
