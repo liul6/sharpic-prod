@@ -16,6 +16,8 @@
         $successAlert = $('#sales-upload-success'),
         $errorAlert = $('#sales-upload-error'),
         $auditNotes = $('#sales-audit-notes');
+        
+        var Recipe = Parse.Object.extend('Recipe');
     
         var Sale = Parse.Object.extend({
             className: 'Sale',
@@ -65,6 +67,7 @@
         }
     });
 
+    var recipesCollection = null;
     var RecipeSelect2CellEditor = Backgrid.Extension.Select2CellEditor.extend({
         tagName: "input",
         attributes: {
