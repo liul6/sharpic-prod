@@ -72,11 +72,11 @@
     }, {
         name: "amount",
         label: "Amount",
-        cell: "NumberCell"
+        cell: NumberCell
     }, {
         name: "price",
         label: "Price",
-        cell: "NumberCell"
+        cell: NumberCell
     }, {
         label: "",
         sortable: false,
