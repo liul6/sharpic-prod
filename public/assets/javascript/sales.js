@@ -2,7 +2,7 @@
 
     var collection = null,
         grid = null,
-        clientSelect = null,
+        saleclientSelect = null,
         auditSelect = null,
         client = null,
         audit = null,
@@ -48,7 +48,7 @@
     var clientSelectChange = function() {
         hideAll();
         audit = null;
-        client = clientsCollection.at(clientSelect.el.selectedIndex - 1);
+        client = clientsCollection.at(saleclientSelect.el.selectedIndex - 1);
         if (client) {
             $addAudit.show();
             if (!auditSelect) {
@@ -149,12 +149,12 @@
                 Parse.Promise.when(queries).then(function () {
                     $activity.activity(false);
 
-                    if (!clientSelect) {
-                        clientSelect = new ClientSelect({id: 'audit-client-select-picker'});
-                        $('#audit-client-select').append(clientSelect.render().el);
+                    if (!saleclientSelect) {
+                        saleclientSelect = new ClientSelect({id: 'audit-client-select-picker'});
+                        $('#audit-client-select').append(saleclientSelect.render().el);
                         $('#audit-client-select-picker').selectpicker();
                     }
-                    clientSelect.el.onchange = clientSelectChange;
+                    saleclientSelect.el.onchange = clientSelectChange;
                 });
             }
         }
