@@ -65,10 +65,110 @@
         }
     });
 
+    var RecipeSelect2CellEditor = Backgrid.Extension.Select2CellEditor.extend({
+        tagName: "input",
+        attributes: {
+            type: 'hidden'
+        },
+        self: null,
+        render: function () {
+            this.$el.select2(this.select2Options);
+            return this;
+        },
+        initialize: function () {
+            self = this;
+            Backgrid.SelectCellEditor.prototype.initialize.apply(this, arguments);
+            if (this.model.get('recipe')) {
+                this.$el.attr('id', this.model.get('recipe').id);
+            }
+        },
+        postRender: function () {
+            var self = this;
+            if (self.multiple) self.$el.select2("container").keydown(self.close);
+            else if (self.$el.data("select2")) self.$el.data("select2").focusser.keydown(self.close);
+
+            self.$el.on("select2-blur", function (e) {
+                if (!self.multiple) {
+                    e.type = "blur";
+                    self.close(e);
+                }
+                else {
+                    var id = root.setTimeout(function () {
+                        root.clearTimeout(id);
+                        if (!self.$el.select2("isFocused")) {
+                            e.type = "blur";
+                            self.close(e);
+                        }
+                    }, 200);
+                }
+            }).select2("focus");
+        },
+        close: function(e) {
+            Backgrid.SelectCellEditor.prototype.close.apply(self, arguments);
+        },
+        save: function (e) {
+            var model = this.model;
+            var column = this.column;
+            var val = this.$el.val();
+            if (val) {
+                model.set(column.get("name"), this.formatter.toRaw(val, model));
+            }
+        }
+    });
+
+    window.RecipeSelect2Cell = Backgrid.Extension.Select2Cell.extend({
+        optionValues: function() {
+            return [];
+        },
+        formatter: {
+            fromRaw: function(recipe) {
+                return recipe ? [recipe.id] : [];
+            },
+            toRaw: function(id) {
+                return _.find(recipesCollection.models, function(recipe) { return recipe.id == id; });
+            }
+        },
+        render: function () {
+            this.$el.empty();
+            var model = this.model;
+            if (model.get('recipe')) {
+                this.$el.append(model.get('recipe').get('name');
+            }
+            this.delegateEvents();
+            return this;
+        },
+        select2Options: {
+            initSelection : function (element, callback) {
+                var recipesQuery = new Parse.Query(Recipe);
+                recipesQuery.include('size');
+                recipesQuery.get(element.context.id).then(function(recipe) {
+                    var data = {
+                        id: recipe.id,
+                        text: recipe.get('name')
+                    };
+                    callback(data);
+                });
+            },
+            minimumInputLength: 1,
+            query: function (query) {
+                var recipesQuery = new Parse.Query(Recipe);
+                recipesQuery.limit('100');
+                recipesQuery.equalTo(this.client);
+                recipesCollection = recipesQuery.collection();
+                recipesCollection.fetch().then(function(recipes) {
+                    query.callback({results: _.map(recipes.models, function (recipe) {
+                        return {id: recipe.id, text: recipe.get('name')};
+                    })});
+                });
+            }
+        },
+        editor: RecipeSelect2CellEditor
+    });
+
     var columns = [{
         name: "recipe",
         label: "Recipe",
-        cell: "string"
+        cell: RecipeSelect2Cell
     }, {
         name: "amount",
         label: "Amount",
