@@ -273,7 +273,7 @@
     };
 
     $fileInput.find(':file').change(function() {
-        $auditsTable.hide();
+        $salesTable.hide();
         $errorAlert.hide();
         $successAlert.hide();
         $activity.activity();
@@ -581,13 +581,17 @@
                 }
                 
                 if(validated){
-                    $auditsTable.show();
+                    auditSelectChange();
+
+                    $salesTable.show();
                     $activity.activity(false);
 
                     $successAlert.show();
                 }
                 else {
-                    $auditsTable.show();
+                    auditSelectChange();
+
+                    $salesTable.show();
                     $activity.activity(false);
                     $errorAlert.show();
                 }
