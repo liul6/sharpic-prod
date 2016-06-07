@@ -216,8 +216,11 @@
         $addAudit.show();
         audit = auditSelect.collection.at(auditSelect.el.selectedIndex);
         if (audit) {
+            $deleteAudit.show();
+            $fileInput.show();
             $addSale.hide();
             $salesTable.hide();
+
             $activity.activity();
             var query = new Parse.Query(Sale);
             var objectIds = [];
