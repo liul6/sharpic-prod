@@ -371,6 +371,35 @@
                 }
                 
                 var newRecipes = [];
+                if (validated) {
+                    var Recipe = Parse.Object.extend('Recipe');
+                    var Sale = Parse.Object.extend('Sale');
+                    var query = new Parse.Query(Recipe);
+                    query.equalTo('client', client);
+                    query.equalTo('ignore', false);
+                    query.exists('recipeItems');
+                    query.descending('updatedAt');
+                    query.limit(1000);
+                    var newNonFoodRecipes=query.collection();
+                                        
+                    var foodrecipequery = new Parse.Query(Recipe);
+                    foodrecipequery.equalTo('client', client);
+                    foodrecipequery.equalTo('food', true);
+                    foodrecipequery.limit(1000);
+                    var newFoodRecipes=foodrecipequery.collection();
+                        
+                    Parse.Promise.when([newNonFoodRecipes.fetch(), newFoodRecipes.fetch()]).then(function(results) {
+                        newNonFoodRecipes.add(newFoodRecipes.models);
+                        newFoodRecipes.models = [];
+                        
+                        newNonFoodRecipes.forEach(function(oneRecipe) {
+                            newRecipes.push(oneRecipe);
+                        });
+                    });
+                    
+                    if(newRecipes.length<=0)
+                        validated = false;
+                }
                 
             }
         });
