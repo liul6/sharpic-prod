@@ -372,8 +372,8 @@
                 
                 var newRecipes = [];
                 if (validated) {
-                    var Recipe = Parse.Object.extend('Recipe');
-                    var Sale = Parse.Object.extend('Sale');
+//                    var Recipe = Parse.Object.extend('Recipe');
+//                    var Sale = Parse.Object.extend('Sale');
                     var query = new Parse.Query(Recipe);
                     query.equalTo('client', client);
                     query.equalTo('ignore', false);
