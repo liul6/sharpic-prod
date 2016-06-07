@@ -280,6 +280,100 @@
         var file = this.files[0];
         var type = "Valante";
         
+                Papa.parse(file, {
+            complete: function (results) {
+                var validated = false;
+                var values = results.data;
+                var titles = ["PLU", "Menu Item", "Gross($) ", "#Voids", "Voids($)", "#Refunds", "Refunds($)", "Discounts($)", "Price Levels($)", "Options($)", "Quantity", "Net($)"];
+                if (values[0].length == 12) {
+                    validated = true;
+                    for (var i = 0; i < 12; i++) {
+                        if (values[0][i] != titles[i]) {
+                            validated = false;
+                            break;
+                        }
+                    }
+                }
+                if (!validated) {
+                    titles = ["Menu Item", "Quantity", "Sales", "Cost", "Percentage"];
+                    if (values[2].length == 5) {
+                        validated = true;
+                        for (var i = 0; i < 5; i++) {
+                            if (values[2][i] != titles[i]) {
+                                validated = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!validated) {
+                      titles = ["Item Name", "Purchase Count", "Purchase Total", "Return Count", "Return Total", "Net Total"];
+                      if (values[2].length == 6) {
+                          validated = true;
+                          for (var i = 0; i < 6; i++) {
+                              if (values[2][i] != titles[i]) {
+                                  validated = false;
+                                  break;
+                              }
+                          }
+                      }
+                    }
+                    if (validated) {
+                        type = "TouchBistro";
+                    }
+                }
+
+                if (!validated) {
+                    titles = ["class_code", "desc_a", "code", "desc_b", "sum_qnty", "sum_price", "type"];
+                    if (values[0].length == 7) {
+                        validated = true;
+                        for (var i = 0; i < 7; i++) {
+                            if (values[0][i] != titles[i]) {
+                                validated = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (validated) {
+                        type = "SilverWare";
+                    }
+                }
+
+                if (!validated) {
+                    titles = ["Class", "Item", "Net Sales", "Disc", "Sales", "Qty"];
+                    if (values[0].length == 6) {
+                        validated = true;
+                        for (var i = 0; i < 6; i++) {
+                            if (values[0][i] != titles[i]) {
+                                validated = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (validated) {
+                        type = "SilverWare2";
+                    }
+                }
+
+                if (!validated) {
+                    titles = ["Rank", "Num", "Item Name", "Sold", "Sold", "Amount", "Cost", "Profit", "Cost %", "Sales"];
+                    if (values[0].length = titles.length) {
+                        validated = true;
+                        for (var i = 0; i < titles.length; i++) {
+                            if (values[0][i] != titles[i]) {
+                                validated = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (validated) {
+                        type = "Cibo";
+                    }
+                }
+                
+                var newRecipes = [];
+                
+            }
+        });
     });
 
     function hideAll() {
