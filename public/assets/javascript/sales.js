@@ -135,7 +135,7 @@
             this.$el.empty();
             var model = this.model;
             if (model.get('recipe')) {
-                this.$el.append(model.get('recipe').get('name');
+                this.$el.append(model.get('recipe').get('name'));
             }
             this.delegateEvents();
             return this;
