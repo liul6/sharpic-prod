@@ -401,6 +401,91 @@
                         validated = false;
                 }
                 
+                                var start = 1;
+                var end =0;
+                if(validated) {
+                    var recipes;
+                    if (type == "TouchBistro") {
+                        start = 3;
+                    }
+                    if (type == "TouchBistro") {
+                        end = values.length;
+                    }
+
+                    var recipesToSave = [];
+                    for (var i = start; i < end; i++) {
+                        var recipe = null;
+                        var name = "",
+                            amount = 0,
+                            gross = 0;
+                        if (type == "Valante") {
+                            name = values[i][1];
+                            amount = parseInt(values[i][10]);
+                            gross = parseFloat(values[i][2]);
+                        } else if (type == "TouchBistro") {
+                            name = values[i][0];
+                            amount = parseInt(values[i][1]);
+                            gross = parseFloat(values[i][2].replace(/[^0-9\.]+/g, ""));
+                        } else if (type == "SilverWare") {
+                            name = values[i][3];
+                            amount = values[i][4];
+                            gross = values[i][5];
+                        } else if (type == "SilverWare2") {
+                            name = values[i][1];
+                            amount = values[i][5];
+                            gross = values[i][4];
+                        } else if (type == "Cibo") {
+                            name = values[i][2];
+                            amount = parseInt(values[i][3]);
+                            gross = parseFloat(values[i][5].replace(/[^0-9\.]+/g, ""));
+                        }
+                        for (var j = 0; j < newRecipes.length; j++) {
+                            var aRecipe = newRecipes[j];
+                            if (aRecipe.get('name') == name) {
+                                recipe = aRecipe;
+                                if (!recipe.get('name')) {
+                                    recipe.set('name', name);
+                                }
+                                break;
+                            }
+                        }
+                        if (!recipe) {
+                            recipe = new Recipe({
+                                name: name,
+                                client: client,
+                                ignore: false,
+                                food: false
+                            });
+                            var acl = new Parse.ACL();
+                            acl.setRoleWriteAccess('Administrator', true);
+                            acl.setRoleReadAccess(client.get('name'), true);
+                            recipe.setACL(acl);
+                            recipesToSave.push(recipe);
+                        }                        
+                    }
+                    recipes = _.union(recipesToSave, newRecipes);
+                    
+                    var tempRecipes = [];
+                    var countRecipe =0;
+                    
+                    for ( var z = 0; z < recipesToSave.length; z++){
+                        countRecipe++;
+                        tempRecipes.push(recipesToSave[z]);
+                        if(countRecipe>5|| z==(recipesToSave.length-1)){
+                            Parse.Object.saveAll(tempRecipes, {
+                                success: function(objs) {
+                                    tempRecipes = [];
+                                    countRecipe=0;
+                                },
+                                error: function(error) { 
+                                    validated = false;
+                                    break;
+                                }
+                            });
+                        }                                                                     
+                    }
+                }
+
             }
         });
     });
