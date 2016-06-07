@@ -272,6 +272,47 @@
         }
     };
 
+    $addAudit.click(function() {
+        var newAudit = new Audit();
+        var acl = new Parse.ACL();
+        acl.setRoleWriteAccess('Administrator', true);
+        acl.setRoleReadAccess(client.get('name'), true);
+        newAudit.setACL(acl);
+        newAudit.save().then(function() {
+            var audits = client.get('audits');
+            audits.push(newAudit);
+            client.set('audits', audits);
+            auditSelect.collection.add(newAudit);
+            auditSelect.render();
+            auditSelect.$el.selectpicker('refresh');
+            auditSelect.$el.selectpicker('val', newAudit.id);
+            auditSelect.el.onchange();
+        });
+    });
+
+    $deleteAudit.click(function() {
+        var $modal = $('#delete-modal');
+        $modal.find('strong').text(audit.createdAt.toDateString());
+        $modal.modal().find('.btn-danger').unbind('click').click(function () {
+            $activity.activity();
+            $salesTable.hide();
+            audit.destroy().then(function() {
+                var client = clientsCollection.at(clientSelect.el.selectedIndex - 1);
+                var audits = client.get('audits');
+                var index = audits.indexOf(audit);
+                audits.splice(index, 1);
+                client.set('audits', audits);
+                auditSelect.render();
+                auditSelect.$el.selectpicker('refresh');
+                auditSelect.$el.selectpicker('val', '');
+                auditSelect.el.onchange();
+                audit = null;
+                $activity.activity(false);
+            });
+            $modal.modal('hide');
+        });
+    });
+
     $fileInput.find(':file').change(function() {
         $salesTable.hide();
         $errorAlert.hide();
