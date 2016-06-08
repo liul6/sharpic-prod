@@ -234,7 +234,7 @@
             }
             
             query.containedIn('objectId', objectIds);
-            query.include('recipe.recipeItems');
+//            query.include('recipe.recipeItems');
             query.limit('1000');
 
             if (!collection) {
