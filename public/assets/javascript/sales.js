@@ -322,7 +322,7 @@
         var acl = new Parse.ACL();
         acl.setRoleWriteAccess('Administrator', true);
         acl.setRoleReadAccess(client.get('name'), true);
-        entry.setACL(acl);
+        sale.setACL(acl);
         collection.comparator = null;
         collection.add(sale, {
             at: 0
