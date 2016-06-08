@@ -483,7 +483,12 @@
                         var origsalesQuery = new Parse.Query(Sale);
                         var objectIds = audit.get('saleIds'); 
                         if(!objectIds || objectIds.length<=0) { 
-                            objectIds = audit.get('sales').map(function(sale) { return sale.id; }); 
+                            if(audit.get('sales')) {
+                                objectIds = audit.get('sales').map(function(sale) { return sale.id; }); 
+                            }
+                            else {
+                                objectIds = [];
+                            }
                         } 
                         
                         origsalesQuery.containedIn('objectId', objectIds);
