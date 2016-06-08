@@ -225,16 +225,14 @@
             var query = new Parse.Query(Sale);
             var objectIds = [];
             
-            if(audit.get('sales')) {
+            objectIds = audit.get('saleIds')
+
+            if(!objectIds || objectIds.length<=0) {
                 objectIds = audit.get('sales').map(function(sale) { return sale.id; });
             }
             
-            if(!objectIds || objectIds.length<=0) {
-                objectIds = audit.get('saleIds')
-            }
-            
             query.containedIn('objectId', objectIds);
-//            query.include('recipe.recipeItems');
+            query.include('recipe.recipeItems');
             query.limit('1000');
 
             if (!collection) {
