@@ -563,12 +563,14 @@
 //                      audit.set('sales',[]);
                         return audit.save();
                     }).then(function(sale) {
+                        auditSelectChange();
                         $salesTable.show();
                         $activity.activity(false);
                         $successAlert.show();
                     }, function(error) {
                         audit.set('sales', []);
                         audit.save();
+                        auditSelectChange();
                         $salesTable.show();
                         $activity.activity(false);
                         $errorAlert.show();
