@@ -315,6 +315,19 @@
             $modal.modal('hide');
         });
     });
+    
+    $addSale.click(function() {
+        var sale = new Sale({
+        });
+        var acl = new Parse.ACL();
+        acl.setRoleWriteAccess('Administrator', true);
+        acl.setRoleReadAccess(client.get('name'), true);
+        entry.setACL(acl);
+        collection.comparator = null;
+        collection.add(sale, {
+            at: 0
+        });
+    });
 
     $fileInput.find(':file').change(function() {
         $salesTable.hide();
