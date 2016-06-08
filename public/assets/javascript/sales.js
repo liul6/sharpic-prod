@@ -228,7 +228,7 @@
             objectIds = audit.get('saleIds')
 
             if(!objectIds || objectIds.length<=0) {
-                if(audit.get('sales') {
+                if(audit.get('sales')) {
                     objectIds = audit.get('sales').map(function(sale) { return sale.id; });
                 }
                 else {
