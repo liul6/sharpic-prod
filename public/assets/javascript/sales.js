@@ -228,7 +228,12 @@
             objectIds = audit.get('saleIds')
 
             if(!objectIds || objectIds.length<=0) {
-                objectIds = audit.get('sales').map(function(sale) { return sale.id; });
+                if(audit.get('sales') {
+                    objectIds = audit.get('sales').map(function(sale) { return sale.id; });
+                }
+                else {
+                    objectIds = [];
+                }
             }
             
             query.containedIn('objectId', objectIds);
@@ -551,7 +556,8 @@
                         
                         audit.set('saleIds',saleIds);
 //                      audit.set('sales',[]);
-                        audit.save();
+                        return audit.save();
+                    }).then(function(sale) {
                         $salesTable.show();
                         $activity.activity(false);
                         $successAlert.show();
