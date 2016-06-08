@@ -337,7 +337,7 @@
         if (audit) {
             $deleteAudit.show();
             $locationSelect.show();
-            $fileInput.show();
+            $fileInput.hide();
             if (!locationSelect) {
                 locationSelect = new LocationSelect({ collection: new LocationCollection(client.get('locations'))});
                 $locationSelect.append(locationSelect.render().el);
