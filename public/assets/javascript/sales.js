@@ -135,7 +135,8 @@
             this.$el.empty();
             var model = this.model;
             if (model.get('recipe')) {
-                this.$el.append(getRecipeDescription(model.get('recipe')));
+                this.$el.append(model.get('recipe').get('name'));
+//                this.$el.append(getRecipeDescription(model.get('recipe')));
             }
             this.delegateEvents();
             return this;
@@ -147,8 +148,8 @@
                 recipesQuery.get(element.context.id).then(function(recipe) {
                     var data = {
                         id: recipe.id,
-                        text: getRecipeDescription(recipe)
-//                        text: recipe.get('name')
+//                        text: getRecipeDescription(recipe)
+                        text: recipe.get('name')
                     };
                     callback(data);
                 });
@@ -163,8 +164,8 @@
                 recipesCollection = recipesQuery.collection();
                 recipesCollection.fetch().then(function(recipes) {
                     query.callback({results: _.map(recipes.models, function (recipe) {
-//                        return {id: recipe.id, text: recipe.get('name')};
-                        return {id: recipe.id, text: getRecipeDescription(recipe)};
+                        return {id: recipe.id, text: recipe.get('name')};
+//                        return {id: recipe.id, text: getRecipeDescription(recipe)};
                     })});
                 });
             }
