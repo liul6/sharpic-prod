@@ -135,7 +135,8 @@
             this.$el.empty();
             var model = this.model;
             if (model.get('recipe')) {
-                this.$el.append(model.get('recipe').get('name'));
+                var recipeDescription = model.get('recipe').get('name');
+                this.$el.append();
             }
             this.delegateEvents();
             return this;
@@ -156,7 +157,9 @@
             query: function (query) {
                 var recipesQuery = new Parse.Query(Recipe);
                 recipesQuery.limit('100');
+                recipesQuery.include('recipeItems');
                 recipesQuery.equalTo(this.client);
+                recipesQuery.descending('updatedAt');
                 recipesCollection = recipesQuery.collection();
                 recipesCollection.fetch().then(function(recipes) {
                     query.callback({results: _.map(recipes.models, function (recipe) {
