@@ -141,19 +141,24 @@
                 }
                 
                 recipeDescription = recipeDescription + "(";
+                var recipeItems = model.get('recipe').get('recipeItems');
                     
-                if(model.get('recipe') && model.get('recipe').get('recipeItems') && model.get('recipe').get('recipeItems').length>0) {
-                    recipeDescription = recipeDescription + _.map(model.get('recipe').get('recipeItems'), function(object) {
-                        if (object.get('product')) {
-                            var size = (object.get('product') && object.get('product').get('size') ? object.get('product').get('size').get('name') : "");
-                            var ounces = (object.get('ounces') ? ' ' + object.get('ounces') + ' ounces' : '');
-                            var fulls = (object.get('fulls') ? ' ' + object.get('fulls') + ' fulls' : '');
-                            return object.get('product').get('name') + ' ' + size + ounces + fulls;
-                        } else {
-                            return "";
+                if(model.get('recipe') && recipeItems && recipeItems.length>0) {
+                     for( var i=0; i<recipeItems.length; i++){
+                        var recipeItem = recipeItems[i];
+                        if(recipeItem.get('product')) {
+                            var size = (recipeItem.get('product') && recipeItem.get('product').get('size') ? recipeItem.get('product').get('size').get('name') : "");
+                            var ounces = (recipeItem.get('ounces') ? ' ' + recipeItem.get('ounces') + ' ounces' : '');
+                            var fulls = (recipeItem.get('fulls') ? ' ' + recipeItem.get('fulls') + ' fulls' : '');
+                            var recipeItemDescription = recipeItem.get('product').get('name') + ' ' + size + ounces + fulls;
+                            recipeDescription = recipeDescription + recipeItemDescription;
+                            if(i!=(recipeItems.length-1)){
+                                recipeDescription = recipeDescription + ",";
+                            }
                         }
-                    }).join(", ");
+                     }                   
                 }
+                
                 recipeDescription = recipeDescription + ")";
                 
                 this.$el.append(recipeDescription);
