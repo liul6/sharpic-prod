@@ -67,6 +67,34 @@
         }
     });
 
+    function getRecipeDescription(recipe) {
+        var recipeDescription = recipe.get('name');
+        if(!recipeDescription) {
+            recipeDescription = "";
+        }
+        
+        recipeDescription = recipeDescription + "(";
+        var recipeItems = recipe.get('recipeItems');
+            
+        if(recipe && recipeItems && recipeItems.length>0) {
+             for( var i=0; i<recipeItems.length; i++){
+                var recipeItem = recipeItems[i];
+                if(recipeItem.get('product')) {
+                    var size = (recipeItem.get('product') && recipeItem.get('product').get('size') ? recipeItem.get('product').get('size').get('name') : "");
+                    var ounces = (recipeItem.get('ounces') ? ' ' + recipeItem.get('ounces') + ' ounces' : '');
+                    var fulls = (recipeItem.get('fulls') ? ' ' + recipeItem.get('fulls') + ' fulls' : '');
+                    var recipeItemDescription = recipeItem.get('product').get('name') + ' ' + size + ounces + fulls;
+                    recipeDescription = recipeDescription + recipeItemDescription;
+                    if(i!=(recipeItems.length-1)){
+                        recipeDescription = recipeDescription + ",";
+                    }
+                }
+            } 
+        }
+        
+        return recipeDescription;
+    }
+    
     var recipesCollection = null;
     var RecipeSelect2CellEditor = Backgrid.Extension.Select2CellEditor.extend({
         tagName: "input",
@@ -135,8 +163,8 @@
             this.$el.empty();
             var model = this.model;
             if (model.get('recipe')) {
-                this.$el.append(model.get('recipe').get('name'));
-//                this.$el.append(getRecipeDescription(model.get('recipe')));
+//                this.$el.append(model.get('recipe').get('name'));
+                this.$el.append(getRecipeDescription(model.get('recipe')));
             }
             this.delegateEvents();
             return this;
@@ -148,8 +176,8 @@
                 recipesQuery.get(element.context.id).then(function(recipe) {
                     var data = {
                         id: recipe.id,
-//                        text: getRecipeDescription(recipe)
-                        text: recipe.get('name')
+                        text: getRecipeDescription(recipe)
+//                        text: recipe.get('name')
                     };
                     callback(data);
                 });
@@ -164,42 +192,14 @@
                 recipesCollection = recipesQuery.collection();
                 recipesCollection.fetch().then(function(recipes) {
                     query.callback({results: _.map(recipes.models, function (recipe) {
-                        return {id: recipe.id, text: recipe.get('name')};
-//                        return {id: recipe.id, text: getRecipeDescription(recipe)};
+//                        return {id: recipe.id, text: recipe.get('name')};
+                        return {id: recipe.id, text: getRecipeDescription(recipe)};
                     })});
                 });
             }
         },
         editor: RecipeSelect2CellEditor
     });
-
-    function getRecipeDescription(recipe){
-        var recipeDescription = recipe.get('name');
-        if(!recipeDescription) {
-            recipeDescription = "";
-        }
-        
-        recipeDescription = recipeDescription + "(";
-        var recipeItems = recipe.get('recipeItems');
-            
-        if(recipe && recipeItems && recipeItems.length>0) {
-             for( var i=0; i<recipeItems.length; i++){
-                var recipeItem = recipeItems[i];
-                if(recipeItem.get('product')) {
-                    var size = (recipeItem.get('product') && recipeItem.get('product').get('size') ? recipeItem.get('product').get('size').get('name') : "");
-                    var ounces = (recipeItem.get('ounces') ? ' ' + recipeItem.get('ounces') + ' ounces' : '');
-                    var fulls = (recipeItem.get('fulls') ? ' ' + recipeItem.get('fulls') + ' fulls' : '');
-                    var recipeItemDescription = recipeItem.get('product').get('name') + ' ' + size + ounces + fulls;
-                    recipeDescription = recipeDescription + recipeItemDescription;
-                    if(i!=(recipeItems.length-1)){
-                        recipeDescription = recipeDescription + ",";
-                    }
-                }
-            } 
-        }
-        
-        return recipeDescription;
-    }
     
     var columns = [{
         name: "recipe",
