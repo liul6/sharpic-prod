@@ -190,6 +190,7 @@
                 recipesQuery.limit('100');
                 recipesQuery.include('recipeItems');
                 recipesQuery.include('recipeItems.product');
+                recipesQuery.include('recipeItems.product.name');
                 recipesQuery.include('recipeItems.product.size');
                 recipesQuery.equalTo(this.client);
                 recipesQuery.descending('updatedAt');
