@@ -187,12 +187,10 @@
             minimumInputLength: 1,
             query: function (query) {
                 var recipesQuery = new Parse.Query(Recipe);
-                recipesQuery.limit('100');
-                recipesQuery.include('recipeItems');
-                recipesQuery.include('recipeItems.product');
-                recipesQuery.include('recipeItems.product.name');
                 recipesQuery.include('recipeItems.product.size');
                 recipesQuery.equalTo(this.client);
+                recipesQuery.equalTo('ignore', false);
+                recipesQuery.limit('1000');
                 recipesQuery.descending('updatedAt');
                 recipesCollection = recipesQuery.collection();
                 recipesCollection.fetch().then(function(recipes) {
